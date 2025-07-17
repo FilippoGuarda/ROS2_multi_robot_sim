@@ -1,8 +1,10 @@
-## Warning
+# ROS2_multi_robot_sim
 
-This is a branch of Victoria Tuck's [Multi Robot Task Allocation Stack](https://github.com/victoria-tuck/multi-robot-task-allocation-stack)! made specifically for WSL2 on windows.  
-It takes as a given that the WSL2 environment is set up and that `nvidia-smi` is posting on the command line.
-In case you are using native linux I strongly suggest to start from the original project as I have done some changes on container files which might break some functions.
+# Warning!!
+Everything here is still a big work in progress, the project originally started from a fork of Victoria Tuck's [Multi Robot Task Allocation Stack](https://github.com/victoria-tuck/multi-robot-task-allocation-stack)! made specifically for WSL2 on windows.  
+But now it is being reworked from the ground up since the use case is different and not completely compatible with the original project.
+
+If you want to use wsl, it takes as a given that the WSL2 environment is set up and that `nvidia-smi` is posting on the command line.
 
 ## Hardware requirements
 - NVIDIA discrete GPU (for gazbeo)
@@ -87,107 +89,3 @@ Example:
 ```
     ros2 launch social_navigation test_multi_robot_launch.py input_file:=/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/robot_setup_6.json
 ```
-
-3. To start humans moving
-```
-rsfm
-```
-Further humans can be added by adding in or uncommenting "actors" in the world file under colcon_ws/src/social_navigation/social_navigation/worlds.
-
-4. To launch multiple robotic agent navigation stacks
-```
-ros2 launch aws_robomaker_hospital_world main.launch.py input_file:=<path_to_setup_file>
-```
-Example:
-```
-ros2 launch aws_robomaker_hospital_world main.launch.py input_file:=/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/robot_setup_6.json
-```
-Note: After this step, the rviz environment should include an arrow for each robot and colored buffers around the walls. If it does not, rerun this command.
-
-5. To launch the navigation stack wrapper
-```
-rcplan --ros-args -p "robots:=<list_of_robot_names>"
-```
-Example:
-```
-rcplan --ros-args -p "robots:=["robot1", "robot2", "robot3", "robot4", "robot5", "robot6"]"
-```
-
-6. To launch the room queues
-```
-rqueues
-```
-
-7. **This will start moving the robots.** For task allocation and high-level path planning for a set of agents:
-```
-rcdis -p input_file:=<setup_file>
-```
-Example:
-```
-rcdis -p input_file:=/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/robot_setup_6.json
-```
-The default implemented task allocator is the SMrTa approach which can be found [here](https://arxiv.org/pdf/2403.11737).
-
-## Experiments
-
-To run the experiment included in our paper, run the examples from the 6 steps above. Calculation time data can be processed afterwards with
-
-```
-python3 process_data.py
-```
-
-which will print out the results of Table 1.
-
-## Debugging
-Many of the nodes have been combined into single launch files for ease of use. However, additional aliases have been included to run these nodes separately when debugging.
-
-1. To get human states from gazebo and to find the closest obstacle points to each robot
-```
-rcsetup input_file:=<setup_file>
-
-```
-
-2. To start the user controller for multiple robots:
-```
-multi_rcbf input_file:=<setup_file>
-```
-
-Example:
-```
-multi_rcbf input_file:=case_config_3.yaml
-```
-
-
-3. When the controller status is ONLINE, run the following command to set goal and run controller simulation
-```
-rcpub
-```
-
-4. To manage the task assignment for each agent:
-```
-rcset input_file:=<setup_file>
-```
-
-## Data Collection
-The TravelTimeCollector node in travel_time_collector.py has been provided in order to collect travel time data. This can be run with:
-```
-rctimecollect -p time_collection_params:=<params_file> -p save_file:=<save_file>
-```
-where <params_file> is the name of a json file containing the number of iterations, save mode, desired format, map locations, and location ids and <save_file> is where the travel time information should be saved.
-
-## Scenic Integration
-
-To integrate with Scenic, navigate to the src folder then install with the following commands:
-```
-git clone git:github.com:Kai-X-Org/ScenicROS2.git
-cd ScenicROS2
-python3 -m pip install -e .
-```
-
-The bookshelf example can be run with
-```
-cd src/scenic/simulators/Gazebo
-scenic test.scenic --simulate
-```
-
-Further documentation can be found on the [documentation page](https://docs.scenic-lang.org/en/latest/). 
