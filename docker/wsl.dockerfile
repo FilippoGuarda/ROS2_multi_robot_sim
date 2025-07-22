@@ -84,7 +84,7 @@ RUN make && make install
 WORKDIR /home/workspace
 
 # Aliases (unchanged as they work fine in WSL2)
-RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py'" >> ~/.bashrc && \
+RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world hospital.launch.py input_file:=/home/workspace/install/multi_robot_sim/share/multi_robot_sim/configs/robot_setup_6.json'" >> ~/.bashrc && \
     echo "alias rnav2='ros2 launch multi_robot_sim test_multi_robot_launch.py'" >> ~/.bashrc && \
     echo "alias six_robots='input_file:=/home/workspace/install/multi_robot_sim/share/multi_robot_sim/configs/robot_setup_6.json'" >> ~/.bashrc
 
