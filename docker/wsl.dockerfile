@@ -55,9 +55,9 @@ RUN python3 -m pip install setuptools==58.2.0 && \
 #     python3 -m pip install myst-parser sphinx sphinx-rtd-theme
 
 # Environment setup
-RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/colcon_ws/src/social_navigation/src" >> ~/.bashrc && \
+RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/workspace/src/social_navigation/src" >> ~/.bashrc && \
     echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
-    echo "source /home/colcon_ws/install/local_setup.bash" >> ~/.bashrc && \
+    echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc && \
     echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 WORKDIR /home/
@@ -81,19 +81,10 @@ RUN make && make install
 # RUN apt-get install -y lsb-release wget gnupg  
 # RUN apt-get install -y ros-humble-ros-gzgarden
 
-# Setup SMrTa
-ADD colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
-WORKDIR /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
-RUN pip3 install -r requirements.txt && pip3 install .
-
-WORKDIR /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa/bitwuzla
-RUN pip3 install . && \
-    echo "export PYTHONPATH=\$PYTHONPATH:$(pwd)/build/src/api/python" >> ~/.bashrc
-
-WORKDIR /home/colcon_ws
+WORKDIR /home/workspace
 
 # Aliases (unchanged as they work fine in WSL2)
 RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py'" >> ~/.bashrc && \
-    echo "alias rnav2='ros2 launch multi_robot_sim test_multi_robot_launch.py'" >> ~/.bashrc && 
+    echo "alias rnav2='ros2 launch multi_robot_sim test_multi_robot_launch.py'" >> ~/.bashrc 
 
 # ENTRYPOINT [ "/bin/bash -i ros2 launcnh aws_robomaker_hospital_world view_hospital.launch.py" ]

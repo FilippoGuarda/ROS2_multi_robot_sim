@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   ros-ubuntu:
-    container_name: multi_robot_task
+    container_name: fleet_simulator
     build:
       context: ../
       dockerfile: docker/wsl.dockerfile
@@ -20,4 +20,4 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
-      - ../colcon_ws:/home/colcon_ws
+      - ../workspace:/home/workspace

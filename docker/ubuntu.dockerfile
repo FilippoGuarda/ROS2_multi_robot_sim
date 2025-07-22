@@ -20,10 +20,10 @@ RUN python3 -m pip install --upgrade "jax[cuda11_pip]==0.4.25" -f https://storag
 RUN python3 -m pip install matplotlib==3.7.1 pillow==9.5.0 kiwisolver==1.4.4 polytope
 RUN python3 -m pip install myst-parser sphinx sphinx-rtd-theme
 
-RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/colcon_ws/src/social_navigation/src" >> ~/.bashrc
+RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/workspace/src/social_navigation/src" >> ~/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
-RUN echo "source /home/colcon_ws/install/local_setup.bash" >> ~/.bashrc
+RUN echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc
 
 WORKDIR /home/
 
@@ -32,15 +32,15 @@ WORKDIR /home/lightsfm
 RUN make && make install
 
 # Setup SMrTa
-ADD colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
-WORKDIR /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
+ADD workspace/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa /home/workspace/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
+WORKDIR /home/workspace/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
 RUN pip3 install -r requirements.txt
 RUN pip3 install .
-WORKDIR /home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa/bitwuzla
+WORKDIR /home/workspace/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa/bitwuzla
 RUN pip3 install .
 RUN echo "export PYTHONPATH=\$PYTHONPATH:$(pwd)/build/src/api/python" >> ~/.bashrc
 
-WORKDIR /home/colcon_ws
+WORKDIR /home/workspace
 #RUN add-apt-repository ppa:deadsnakes/ppa
 #RUN apt-get install -y python3.11
 #RUN apt-get install -y python3.11-distutils
@@ -63,16 +63,16 @@ WORKDIR /home/colcon_ws
 #RUN pip3 install -U setuptools
 #RUN pip3 install polytope
 #WORKDIR /home/
-#RUN echo "export PYTHONPATH=$PYTHONPATH:/home/colcon_ws/src/social_navigation/src" >> ~/.bashrc
+#RUN echo "export PYTHONPATH=$PYTHONPATH:/home/workspace/src/social_navigation/src" >> ~/.bashrc
 #RUN echo "source /opt/ros/galactic/setup.bash" >> ~/.bashrc
 #RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
-#RUN echo "source /home/colcon_ws/install/local_setup.bash" >> ~/.bashrc
+#RUN echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc
 
 RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py'" >> ~/.bashrc
 RUN echo "alias rnav2='ros2 launch social_navigation nav2_tb3_aws_launch.py'" >> ~/.bashrc
 RUN echo "alias rcsetup='ros2 launch social_navigation init_controller_setup.launch.py'" >> ~/.bashrc
 RUN echo "alias rcpub='ros2 topic pub /planner_init std_msgs/msg/Bool data:\ true'" >> ~/.bashrc
-RUN echo "alias rcbf='/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/multiagent_nav2_cbf.sh'" >> ~/.bashrc
+RUN echo "alias rcbf='/home/workspace/src/social_navigation/social_navigation_py/social_navigation_py/multiagent_nav2_cbf.sh'" >> ~/.bashrc
 RUN echo "alias rcbf2r1='ros2 run social_navigation_py nav2_cbf --ros-args -p use_sim_time:=True -r robot_controller:__node:=robot_controller_1 -r basic_navigator:__node:=basic_navigator -p "robot_name:='robot1'" -p "robot_list:=['robot2']"'" >> ~/.bashrc
 RUN echo "alias multi_rcbf='ros2 launch social_navigation multi_cbf.launch.py'" >> ~/.bashrc
 RUN echo "alias rmppi='ros2 run social_navigation_py nav2_mppi --ros-args -p use_sim_time:=True'" >> ~/.bashrc
