@@ -7,7 +7,7 @@ from launch_ros.actions import Node
 import os
 
 def launch_nav_launch(context, *args, **kwargs):
-    social_nav_dir = get_package_share_directory('social_navigation')
+    social_nav_dir = get_package_share_directory('multi_robot_sim')
     nav_launch = os.path.join(social_nav_dir, 'launch/nav2_tb3_aws_launch.py')
     setup_launch = os.path.join(social_nav_dir, 'launch/init_controller_setup.launch.py')
     map = LaunchConfiguration('map')
@@ -33,7 +33,7 @@ def launch_gazebo_launch(context):
     )]
 
 def launch_cbf_launch(context):
-    social_nav_dir = get_package_share_directory('social_navigation')
+    social_nav_dir = get_package_share_directory('multi_robot_sim')
     cbf_launch = os.path.join(social_nav_dir, 'launch/multi_cbf.launch.py')
     return [IncludeLaunchDescription(
         PythonLaunchDescriptionSource(cbf_launch),
@@ -43,7 +43,7 @@ def launch_cbf_launch(context):
     )]
 
 def launch_goal_setter_launch(context):
-    social_nav_dir = get_package_share_directory('social_navigation')
+    social_nav_dir = get_package_share_directory('multi_robot_sim')
     goal_setter_launch = os.path.join(social_nav_dir, 'launch/goal_setter.launch.py')
     return [IncludeLaunchDescription(
         PythonLaunchDescriptionSource(goal_setter_launch),
@@ -56,7 +56,7 @@ def launch_goal_setter_launch(context):
 def generate_launch_description():
 
     world_dir = get_package_share_directory('aws_robomaker_hospital_world')
-    social_nav_dir = get_package_share_directory('social_navigation')
+    social_nav_dir = get_package_share_directory('multi_robot_sim')
 
     gazebo_launch = os.path.join(world_dir, 'launch/view_hospital.launch.py')
     nav_launch = os.path.join(social_nav_dir, 'launch/nav2_tb3_aws_launch.py')
@@ -69,7 +69,7 @@ def generate_launch_description():
     #     description='Map yaml file')
 
     planner_initializer = Node(
-        package='social_navigation_py',
+        package='multi_robot_sim_py',
         executable='init_planner',
         output='screen',
         parameters=[{

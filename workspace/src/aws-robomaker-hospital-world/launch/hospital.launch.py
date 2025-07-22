@@ -10,9 +10,9 @@ import argparse
 import json
 
 def generate_launch_description():
-    social_navigation_dir = get_package_share_directory('multi_robot_sim')
+    multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
     world_file_name = "aws_hospital_no_humans.world"
-    world = os.path.join(social_navigation_dir, 'worlds', world_file_name)
+    world = os.path.join(multi_robot_sim_dir, 'worlds', world_file_name)
 
 
     arguments = parse_arguments(sys.argv)
@@ -27,13 +27,13 @@ def generate_launch_description():
 
     declare_robot_urdf_cmd = DeclareLaunchArgument(
         'robot_urdf',
-        default_value=os.path.join(social_navigation_dir, 'urdf', 'turtlebot3_waffle.urdf.xacro'),
+        default_value=os.path.join(multi_robot_sim_dir, 'urdf', 'turtlebot3_waffle.urdf.xacro'),
         description='Full path to robot URDF file to spawn the robot in gazebo')
 
 
     robot_urdf = LaunchConfiguration('robot_urdf')
     
-    gazebo_params_path = os.path.join(social_navigation_dir, 'configs', 'gazebo_params.yml')
+    gazebo_params_path = os.path.join(multi_robot_sim_dir, 'configs', 'gazebo_params.yml')
     launch_gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),

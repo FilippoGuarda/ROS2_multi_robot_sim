@@ -31,7 +31,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
-    social_navigation_dir = get_package_share_directory('social_navigation')
+    multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
     
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -50,7 +50,7 @@ def generate_launch_description():
     
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(social_navigation_dir, 'configs', 'nav2_params.yaml'),
+        default_value=os.path.join(multi_robot_sim_dir, 'configs', 'nav2_params.yaml'),
         description='Full path to the ROS2 parameters file')
     
     declare_autostart_cmd = DeclareLaunchArgument(

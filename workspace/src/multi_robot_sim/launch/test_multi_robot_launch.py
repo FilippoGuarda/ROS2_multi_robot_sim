@@ -59,7 +59,7 @@ def generate_robot_launches(context):
     namespaces_str = context.launch_configurations.get('namespaces', '')
     namespaces = [ns.strip() for ns in namespaces_str.split(',') if ns.strip()]
     
-    social_navigation_dir = get_package_share_directory('multi_robot_sim')
+    multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
     
     robot_launches = []
     for i, namespace in enumerate(namespaces):
@@ -74,7 +74,7 @@ def generate_robot_launches(context):
 
         robot_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(social_navigation_dir, 'launch', 'single_robot_nav_launch.py')
+                os.path.join(multi_robot_sim_dir, 'launch', 'single_robot_nav_launch.py')
             ),
             launch_arguments={
                 'namespace': namespace,
@@ -108,8 +108,8 @@ def generate_launch_description():
             ROBOT_POSITIONS = []
     
     # Package directories
-    social_navigation_dir = get_package_share_directory('multi_robot_sim')
-    social_navigation_config_dir = os.path.join(social_navigation_dir, 'configs')
+    multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
+    multi_robot_sim_config_dir = os.path.join(multi_robot_sim_dir, 'configs')
     mrgc_pkg_dir = get_package_share_directory('multi_robot_costmap_plugin')
     
     # Launch configuration variables
@@ -132,7 +132,7 @@ def generate_launch_description():
     
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
-        default_value=os.path.join(social_navigation_dir, 'worlds', 'map_aws', 'my_map.yaml'),
+        default_value=os.path.join(multi_robot_sim_dir, 'worlds', 'map_aws', 'my_map.yaml'),
         description='Full path to map file to load'
     )
     
@@ -144,7 +144,7 @@ def generate_launch_description():
     
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(social_navigation_config_dir, 'nav2_params.yaml'),
+        default_value=os.path.join(multi_robot_sim_config_dir, 'nav2_params.yaml'),
         description='Full path to the ROS2 parameters file to use for all launched nodes'
     )
     
@@ -156,7 +156,7 @@ def generate_launch_description():
     
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config_file',
-        default_value=os.path.join(social_navigation_config_dir, 'shared_costmap_rviz.rviz'),
+        default_value=os.path.join(multi_robot_sim_config_dir, 'shared_costmap_rviz.rviz'),
         description='Full path to the RVIZ config file to use'
     )
     

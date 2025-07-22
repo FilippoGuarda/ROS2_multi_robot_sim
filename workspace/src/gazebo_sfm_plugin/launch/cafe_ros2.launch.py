@@ -15,9 +15,9 @@ def generate_launch_description():
     env_cmd1 = SetEnvironmentVariable(name='TURTLEBOT3_MODEL', value='waffle')
     env_cmd2 = SetEnvironmentVariable(name='GAZEBO_MODEL_PATH', value='$GAZEBO_MODEL_PATH:/opt/ros/galactic/share/turtlebot3_gazebo/models')
     env_cmd3 = SetEnvironmentVariable(name='GAZEBO_MODEL_PATH', value='$GAZEBO_MODEL_PATH:/home/colcon_ws/src/aws-robomaker-hospital-world/ignition_models')
-    social_navigation_dir = get_package_share_directory('social_navigation')
+    multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
 
-    world_file = os.path.join(social_navigation_dir, 'worlds', 'waffle_aws_hospital.world'),
+    world_file = os.path.join(multi_robot_sim_dir, 'worlds', 'waffle_aws_hospital.world'),
 
     my_gazebo_models = PathJoinSubstitution([
         FindPackageShare('gazebo_sfm_plugin'),
