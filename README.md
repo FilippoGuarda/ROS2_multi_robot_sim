@@ -14,21 +14,14 @@ If you want to use wsl, it takes as a given that the WSL2 environment is set up 
 - https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
 ## Installation
-This documentation is for `main` branch of `multi-robot-task-allocation-stack` repository and of this repository.
+This documentation is for the `main` branch of `ROS2_multi_robot_sim` repository.
 
-To setup the SMrTa task allocator, first add the submodules running
+To setup the Multi robot costmap plugin, first add the submodules by running
 ```
 
 git submodule init
 git submodule update
 ```
-
-Then install the [bitwuzla](https://github.com/bitwuzla/bitwuzla/blob/main/docs/install.rst) Python bindings dependencies. Bitwuzla can be installed by running
-
-```
-sh setup_bitwuzla.sh
-```
-from the SMrTa folder.
 
 Then to build the environment, run
 ```
@@ -51,39 +44,35 @@ Note sometimes ROS does not figure out package dependency order properly when mu
 
 Now source the installed packages with following command
 ```
-source install/local_setup.bash
-source /usr/share/gazebo/setup.sh
+source ~/.bashrc
 ```
 Finally, to give docker environment permission to use graphics of hist machine, run the following command **from host machine**
 ```
 xhost +
 ```
 
-## Customization
-Choose nominal controller gains and CBF parameters in `cbf_obstacle_controller.py`.
-
-To change the number of controllers that are started, change the case config file in `multi_cbf.launch.py` to your config file or change the name of the file to `case_config.yaml`
-
 ## Running the Code
-Then run the code in the following sequence. To aid in implementation, several aliases are defined in the `~/.bashrc` file upon docker build. Six terminals will be needed; run the docker exec command in each terminal. Wait for each of the below commands to complete before running the next.
+Then run the code in the following sequence. 
 
-1. To launch the gazebo environment with the robot inside it
+1. To launch the gazebo environment with the robots inside it
 
 ```
-rgazebo input_file:=<path_to_setup_file>
+rgazebo
 ```
-Example:
+Alternatively, you can launch a specific input file with 
 ```
-rgazebo input_file:=/home/workspace/src/multi_robot_sim/configs/robot_setup_6.json
+ros2 launch aws_robomaker_hospital_world hospital.launch.py input_file:=<input_file_path>
 ```
+
+
 Note: After this step, the Gazebo environment should the robots (which are in the middle of blue circles). Upon start-up, the robot installation will occasionally fail. If this occurs, exit and rerun the above command.
 
 2. To launch the ROS2 navigation stack (to use its planners)
 
 ```
-ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<path_to_setup_file>
+rnav2
 ```
 Example:
 ```
-    ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=/home/colcon_ws/src/multi_robot_sim/multi_robot_sim_py/multi_robot_sim_py/robot_setup_6.json
+ ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<input_file_path>
 ```
