@@ -18,9 +18,7 @@ This documentation is for `main` branch of `multi-robot-task-allocation-stack` r
 
 To setup the SMrTa task allocator, first add the submodules running
 ```
-git submodule init
-git submodule update
-cd colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/SMrTa
+
 git submodule init
 git submodule update
 ```
@@ -76,16 +74,16 @@ rgazebo input_file:=<path_to_setup_file>
 ```
 Example:
 ```
-rgazebo input_file:=/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/robot_setup_6.json
+rgazebo input_file:=/home/workspace/src/multi_robot_sim/configs/robot_setup_6.json
 ```
 Note: After this step, the Gazebo environment should the robots (which are in the middle of blue circles). Upon start-up, the robot installation will occasionally fail. If this occurs, exit and rerun the above command.
 
 2. To launch the ROS2 navigation stack (to use its planners)
 
 ```
-ros2 launch social_navigation test_multi_robot_launch.py input_file:=<path_to_setup_file>
+ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<path_to_setup_file>
 ```
 Example:
 ```
-    ros2 launch social_navigation test_multi_robot_launch.py input_file:=/home/colcon_ws/src/social_navigation/social_navigation_py/social_navigation_py/robot_setup_6.json
+    ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=/home/colcon_ws/src/multi_robot_sim/multi_robot_sim_py/multi_robot_sim_py/robot_setup_6.json
 ```
