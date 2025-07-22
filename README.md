@@ -67,7 +67,20 @@ ros2 launch aws_robomaker_hospital_world hospital.launch.py input_file:=<input_f
 
 Note: After this step, the Gazebo environment should the robots (which are in the middle of blue circles). Upon start-up, the robot installation will occasionally fail. If this occurs, exit and rerun the above command.
 
-2. To launch the ROS2 navigation stack (to use its planners)
+2. To start the costmap fusion node
+
+```
+gcostmap
+```
+
+The global costmap can also be launched straight from 
+
+```
+ros2 launch multi_robot_costmap_plugin
+multi_robot_costmap_launch.py
+```
+
+3. To launch the ROS2 navigation stack (to use its planners)
 
 ```
 rnav2

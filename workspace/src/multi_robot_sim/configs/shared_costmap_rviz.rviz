@@ -29,7 +29,9 @@ Panels:
     Name: Tool Properties
     Splitter Ratio: 0.5
   - Class: rviz_common/Tool Properties
-    Expanded: ~
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Goal Pose1
     Name: Tool Properties
     Splitter Ratio: 0.5
 Visualization Manager:
@@ -554,7 +556,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 10.975008010864258
+      Angle: 11.010008811950684
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -564,11 +566,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: -51.24563980102539
+      Scale: -69.97676086425781
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
-      X: -0.5067954659461975
-      Y: -2.063852548599243
+      X: -0.4499676823616028
+      Y: 3.563695192337036
     Saved: ~
 Window Geometry:
   Displays:
@@ -586,5 +588,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1908
-  X: 1024
-  Y: 202
+  X: 992
+  Y: 170
