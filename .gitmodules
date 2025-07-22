@@ -1,3 +1,0 @@
-[submodule "src/multi_robot_costmap_plugin"]
-	path = src/multi_robot_costmap_plugin
-	url = https://github.com/FilippoGuarda/multi_robot_costmap_plugin.git
