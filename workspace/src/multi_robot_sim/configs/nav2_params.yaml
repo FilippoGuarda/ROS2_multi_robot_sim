@@ -215,9 +215,9 @@ local_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          raytrace_max_range: 3.5
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
+          obstacle_max_range: 3.0
           obstacle_min_range: 0.0
 
 planner_server:
@@ -252,10 +252,10 @@ global_costmap:
       multi_robot_layer:
         plugin: "multi_robot_costmap_plugin/MultiRobotLayer"
         enabled: true
-        shared_grid_topic: "/shared_obstacles_grid"
-        robot_namespace: "ROBOT_NAMESPACE_PLACEHOLDER"  # Will be substituted
-        robot_radius: 0.3
-        exclusion_buffer: 0.5
+        shared_grid_topic: "/shared_obstacles"  # Match your fusion node's topic
+        robot_radius: 0.35
+        exclusion_buffer: 0.1
+        transform_timeout: 0.1
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
