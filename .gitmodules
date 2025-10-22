@@ -1,3 +1,6 @@
 [submodule "workspace/src/multi_robot_costmap_plugin"]
 	path = workspace/src/multi_robot_costmap_plugin
 	url = https://github.com/FilippoGuarda/multi_robot_costmap_plugin.git
+[submodule "workspace/src/SMrTa"]
+	path = workspace/src/SMrTa
+	url = https://github.com/victoria-tuck/SMrTa
