@@ -1,0 +1,2 @@
+# FleetAssignments.msg
+Assignment[] assignments

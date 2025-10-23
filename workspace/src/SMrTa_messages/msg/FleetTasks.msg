@@ -1,0 +1,2 @@
+# FleetTasks.msg
+Task[] tasks
