@@ -1,6 +1,7 @@
 from setuptools import find_packages, setup
+from typing import List
 
-package_name = 'SMrTa_wrapper'
+package_name = 'smrta_wrapper'
 
 setup(
     name=package_name,

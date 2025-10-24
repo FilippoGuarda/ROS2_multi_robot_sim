@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(SMrTa_messages)
+project(smrta_messages)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -25,6 +25,5 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES builtin_interfaces std_msgs
 )
 
-ament_python_install_module(${PROJECT_NAME})
 
 ament_package()

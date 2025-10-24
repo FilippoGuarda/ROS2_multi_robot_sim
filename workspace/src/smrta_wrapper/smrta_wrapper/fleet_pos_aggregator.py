@@ -6,8 +6,7 @@ from std_msgs.msg import String
 class FleetPositionAggregator(Node):
     def __init__(self):
         super().__init__('fleet_position_aggregator')
-        # List of robot names (could be parameterized)
-        self.robot_names = ['robot1', 'robot2']  # Extend as needed
+        self.robot_names = ['robot1', 'robot2']  T
         self.positions = {}
 
         # Subscribers for each robot's pose
