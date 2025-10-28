@@ -50,7 +50,7 @@ def generate_launch_description():
     
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(multi_robot_sim_dir, 'configs', 'nav2_params.yaml'),
+        default_value=os.path.join(multi_robot_sim_dir, 'config', 'nav2_params.yaml'),
         description='Full path to the ROS2 parameters file')
     
     declare_autostart_cmd = DeclareLaunchArgument(
