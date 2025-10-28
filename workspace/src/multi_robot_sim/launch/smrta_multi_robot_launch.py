@@ -100,21 +100,21 @@ def generate_smrta_wrapper_nodes(context):
     )
     
 
-    task_assignment = Node(
-        package='smrta_wrapper',
-        executable='task_assignment_node',
-        name='smrta_task_assignment_node',
-        output='screen',
-        parameters=[{
-            'graph_file': LaunchConfiguration('graph_file').perform(context),
-            'capacity': 2,
-            'num_aps': 5,
-            'solver_name': 'z3',
-            'theory': 'QF_UFLIA',
-            'use_sim_time': LaunchConfiguration('use_sim_time').perform(context),
-            'allocation_period': 5.0
-        }]
-    )
+    # task_assignment = Node(
+    #     package='smrta_wrapper',
+    #     executable='task_assignment_node',
+    #     name='smrta_task_assignment_node',
+    #     output='screen',
+    #     parameters=[{
+    #         'graph_file': LaunchConfiguration('graph_file').perform(context),
+    #         'capacity': 2,
+    #         'num_aps': 5,
+    #         'solver_name': 'z3',
+    #         'theory': 'QF_UFLIA',
+    #         'use_sim_time': LaunchConfiguration('use_sim_time').perform(context),
+    #         'allocation_period': 5.0
+    #     }]
+    # )
     
     # One per robot
     robot_controllers = []
