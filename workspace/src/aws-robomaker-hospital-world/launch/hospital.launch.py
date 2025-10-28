@@ -33,7 +33,7 @@ def generate_launch_description():
 
     robot_urdf = LaunchConfiguration('robot_urdf')
     
-    gazebo_params_path = os.path.join(multi_robot_sim_dir, 'configs', 'gazebo_params.yml')
+    gazebo_params_path = os.path.join(multi_robot_sim_dir, 'config', 'gazebo_params.yml')
     launch_gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),

@@ -5,16 +5,14 @@ from rclpy.node import Node
 from rclpy.action import ActionClient
 from nav2_msgs.action import NavigateToPose
 from geometry_msgs.msg import PoseStamped
-from std_msgs.msg import String
+from smrta_messages.msg import FleetAssignments
 import json
-from smrta_messages.msg import Assignment, FleetAssignments, RobotPosition, Task, FleetTasks, FleetRobotPositions
 
 class RobotControllerNode(Node):
     def __init__(self):
         super().__init__('robot_controller_node')
         
         self.declare_parameter('robot_id', 'robot1')
-        self.declare_parameter('use_sim_time', True)
         self.declare_parameter('task_poses_file', '')
         
         self.robot_id = self.get_parameter('robot_id').get_parameter_value().string_value
@@ -33,8 +31,9 @@ class RobotControllerNode(Node):
             except Exception as e:
                 self.get_logger().warn(f'Failed to load task poses file: {e}')
         
+        # CORRECTED: Subscribe to FleetAssignments instead of String
         self.assignment_sub = self.create_subscription(
-            String,
+            FleetAssignments,
             '/smrta/task_assignments',
             self.assignment_callback,
             10
@@ -47,14 +46,15 @@ class RobotControllerNode(Node):
         )
         
         self.get_logger().info(f'Robot Controller initialized for {self.robot_id}')
+        self.get_logger().info(f'Subscribing to: /smrta/task_assignments (FleetAssignments)')
         self.get_logger().info(f'Waiting for navigation action server at /{self.robot_id}/navigate_to_pose')
     
     def assignment_callback(self, msg):
-        try:
-            assignments = json.loads(msg.data)
-            
-            if self.robot_id in assignments:
-                new_tasks = assignments[self.robot_id]
+        """Callback for FleetAssignments message"""
+        # Find assignments for this robot
+        for assignment in msg.assignments:
+            if assignment.robot_id == self.robot_id:
+                new_tasks = list(assignment.task_ids)
                 
                 if new_tasks != self.current_tasks:
                     self.current_tasks = new_tasks
@@ -63,9 +63,7 @@ class RobotControllerNode(Node):
                     
                     if not self.executing and self.current_tasks:
                         self.send_next_goal()
-        
-        except json.JSONDecodeError as e:
-            self.get_logger().error(f'Failed to parse task assignments: {e}')
+                break
     
     def send_next_goal(self):
         if self.current_task_index >= len(self.current_tasks):
@@ -103,12 +101,16 @@ class RobotControllerNode(Node):
         self._send_goal_future.add_done_callback(self.goal_response_callback)
     
     def lookup_task_pose(self, task_id):
+        """Look up the pose for a task ID"""
         pose = PoseStamped()
         pose.header.frame_id = 'map'
         pose.header.stamp = self.get_clock().now().to_msg()
         
-        if str(task_id) in self.task_poses_map:
-            task_data = self.task_poses_map[str(task_id)]
+        # Convert task_id to string for lookup
+        task_id_str = str(task_id)
+        
+        if task_id_str in self.task_poses_map:
+            task_data = self.task_poses_map[task_id_str]
             pose.pose.position.x = task_data.get('x', 0.0)
             pose.pose.position.y = task_data.get('y', 0.0)
             pose.pose.position.z = task_data.get('z', 0.0)
@@ -119,16 +121,15 @@ class RobotControllerNode(Node):
             return pose
         
         self.get_logger().warn(f'No pose mapping for task {task_id}, using default coordinates')
+        # Fallback: use task_id as a simple offset
         pose.pose.position.x = float(task_id) * 2.0
         pose.pose.position.y = float(task_id) * 1.5
         pose.pose.position.z = 0.0
         pose.pose.orientation.w = 1.0
-        
         return pose
     
     def goal_response_callback(self, future):
         goal_handle = future.result()
-        
         if not goal_handle.accepted:
             self.get_logger().error('Navigation goal rejected by action server')
             self.executing = False
@@ -137,7 +138,6 @@ class RobotControllerNode(Node):
             return
         
         self.get_logger().info('Navigation goal accepted')
-        
         self._get_result_future = goal_handle.get_result_async()
         self._get_result_future.add_done_callback(self.nav_result_callback)
     
@@ -166,7 +166,6 @@ class RobotControllerNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = RobotControllerNode()
-    
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

@@ -1,2 +1,2 @@
 # FleetRobotPositions.msg
-RobotPosition[] robots
+RobotPosition[] positions

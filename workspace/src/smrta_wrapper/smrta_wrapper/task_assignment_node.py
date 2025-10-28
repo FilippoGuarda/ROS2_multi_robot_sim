@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
+from smrta_messages.msg import FleetRobotPositions, FleetTasks, FleetAssignments, Assignment
 import json
 import os
 
@@ -25,7 +25,6 @@ class SMrTaTaskAssignmentNode(Node):
         self.declare_parameter('num_aps', 5)
         self.declare_parameter('solver_name', 'z3')
         self.declare_parameter('theory', 'QF_UFLIA')
-        self.declare_parameter('use_sim_time', True)
         self.declare_parameter('allocation_period', 5.0)
         
         # Get parameters
@@ -47,23 +46,23 @@ class SMrTaTaskAssignmentNode(Node):
             self.get_logger().error('SMrTA solver not available. Please install MRTASolver package.')
             return
         
-        # Subscriptions
+        # Subscriptions - CORRECTED to use custom messages
         self.position_sub = self.create_subscription(
-            String, 
-            '/fleet/robot_positions', 
-            self.positions_callback, 
+            FleetRobotPositions,
+            '/fleet/robot_positions',
+            self.positions_callback,
             10
         )
         
         self.task_sub = self.create_subscription(
-            String, 
-            '/fleet/tasks', 
-            self.tasks_callback, 
+            FleetTasks,
+            '/fleet/tasks',
+            self.tasks_callback,
             10
         )
         
-        # Publisher
-        self.assignment_pub = self.create_publisher(String, '/smrta/task_assignments', 10)
+        # Publisher - CORRECTED to use custom message
+        self.assignment_pub = self.create_publisher(FleetAssignments, '/smrta/task_assignments', 10)
         
         # Timer
         self.timer = self.create_timer(self.allocation_period, self.run_smrta)
@@ -72,21 +71,40 @@ class SMrTaTaskAssignmentNode(Node):
         self.get_logger().info(f'Graph file: {self.graph_file}')
         self.get_logger().info(f'Capacity: {self.capacity}, Num APs: {self.num_aps}')
         self.get_logger().info(f'Solver: {self.solver_name}, Theory: {self.theory}')
+        self.get_logger().info(f'Subscribing to: /fleet/robot_positions (FleetRobotPositions)')
+        self.get_logger().info(f'Subscribing to: /fleet/tasks (FleetTasks)')
+        self.get_logger().info(f'Publishing to: /smrta/task_assignments (FleetAssignments)')
     
     def positions_callback(self, msg):
-        try:
-            self.robot_states = json.loads(msg.data)
-            self.get_logger().debug(f"Received robot positions: {list(self.robot_states.keys())}")
-        except json.JSONDecodeError as e:
-            self.get_logger().error(f'Failed to parse robot positions: {e}')
+        """Callback for FleetRobotPositions message"""
+        self.robot_states = {}
+        for robot_pos in msg.positions:
+            self.robot_states[robot_pos.robot_id] = {
+                'x': robot_pos.x,
+                'y': robot_pos.y,
+                'z': robot_pos.z,
+                'graph_node_id': robot_pos.graph_node_id,  # CORRECTED: now available
+                'orientation': {
+                    'x': robot_pos.orientation_x,
+                    'y': robot_pos.orientation_y,
+                    'z': robot_pos.orientation_z,
+                    'w': robot_pos.orientation_w
+                }
+            }
+        self.get_logger().debug(f"Received positions for {len(self.robot_states)} robots")
     
     def tasks_callback(self, msg):
-        try:
-            task_dicts = json.loads(msg.data)
-            self.tasks = task_dicts
-            self.get_logger().info(f"Received {len(self.tasks)} tasks")
-        except json.JSONDecodeError as e:
-            self.get_logger().error(f'Failed to parse tasks: {e}')
+        """Callback for FleetTasks message"""
+        self.tasks = []
+        for task_msg in msg.tasks:
+            task_dict = {
+                'id': task_msg.task_id,
+                'start': task_msg.start_node,
+                'end': task_msg.end_node,
+                'deadline': task_msg.deadline if task_msg.deadline > 0 else None
+            }
+            self.tasks.append(task_dict)
+        self.get_logger().info(f"Received {len(self.tasks)} tasks")
     
     def run_smrta(self):
         if not self.robot_states:
@@ -112,19 +130,19 @@ class SMrTaTaskAssignmentNode(Node):
                 self.room_count, self.graph = dictionary_to_matrix(room_dictionary)
                 self.get_logger().info(f'Graph loaded: {self.room_count} rooms')
             
-            # Prepare robots
+            # Prepare robots - CORRECTED: use graph_node_id instead of room_id
             robots = []
             for robot_id, pose in self.robot_states.items():
-                position = pose.get('room_id', 0)
+                position = pose.get('graph_node_id', 0)
                 robots.append(Robot(robot_id, position))
             
             # Prepare tasks
             task_objects = []
             for t in self.tasks:
                 task_obj = Task(
-                    t['id'], 
-                    t['start'], 
-                    t['end'], 
+                    t['id'],
+                    t['start'],
+                    t['end'],
                     t.get('deadline', None)
                 )
                 task_objects.append(task_obj)
@@ -157,19 +175,28 @@ class SMrTaTaskAssignmentNode(Node):
             self.get_logger().error(traceback.format_exc())
     
     def publish_assignments(self, solution, robots):
+        """Publish task assignments using custom message"""
         try:
-            assignments = {}
+            fleet_assignments = FleetAssignments()
             
             if 'agt' in solution:
                 for idx, robot_data in enumerate(solution['agt']):
                     if idx < len(robots):
                         robot_id = robots[idx].id
-                        assigned_tasks = robot_data.get('id', [])
-                        assignments[robot_id] = assigned_tasks
+                        assigned_task_ids = robot_data.get('id', [])
+                        
+                        assignment = Assignment()
+                        assignment.robot_id = robot_id
+                        assignment.task_ids = assigned_task_ids
+                        
+                        fleet_assignments.assignments.append(assignment)
             
-            assignment_msg = json.dumps(assignments)
-            self.assignment_pub.publish(String(data=assignment_msg))
-            self.get_logger().info(f"Published assignments: {assignments}")
+            self.assignment_pub.publish(fleet_assignments)
+            self.get_logger().info(f"Published assignments for {len(fleet_assignments.assignments)} robots")
+            
+            # Log the assignments
+            for assignment in fleet_assignments.assignments:
+                self.get_logger().info(f"  {assignment.robot_id}: {assignment.task_ids}")
         
         except Exception as e:
             self.get_logger().error(f'Error publishing assignments: {e}')

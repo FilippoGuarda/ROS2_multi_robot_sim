@@ -25,6 +25,7 @@ setup(
             'fleet_pos_aggregator = smrta_wrapper.fleet_pos_aggregator:main',
             'task_assignment_node = smrta_wrapper.task_assignment_node:main',
             'robot_controller_node = smrta_wrapper.robot_controller_node:main',
+            'task_publisher_cli = smrta_wrapper.task_publisher_cli:main',
         ],
     },
 )

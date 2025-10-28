@@ -1,6 +1,10 @@
 # RobotPosition.msg
 string robot_id
-int32 current_room
 float64 x
 float64 y
-float64 theta
+float64 z
+int32 graph_node_id
+float64 orientation_x
+float64 orientation_y
+float64 orientation_z
+float64 orientation_w

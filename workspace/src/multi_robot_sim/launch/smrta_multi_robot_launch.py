@@ -86,21 +86,22 @@ def generate_smrta_wrapper_nodes(context):
     namespaces_str = context.launch_configurations.get('namespaces', '')
     namespaces = [ns.strip() for ns in namespaces_str.split(',') if ns.strip()]
     
-    # Fleet Position Aggregator Node
+
     fleet_aggregator = Node(
-        package='smrta_wrapper',  # Replace with your actual package name
+        package='smrta_wrapper',
         executable='fleet_pos_aggregator',
         name='fleet_position_aggregator',
         output='screen',
         parameters=[{
             'robot_namespaces': namespaces,
-            'use_sim_time': LaunchConfiguration('use_sim_time').perform(context)
+            'use_sim_time': LaunchConfiguration('use_sim_time').perform(context),
+            'graph_nodes_file': LaunchConfiguration('graph_nodes_file').perform(context)  # NEW
         }]
     )
     
-    # Task Assignment Node
+
     task_assignment = Node(
-        package='smrta_wrapper',  # Replace with your actual package name
+        package='smrta_wrapper',
         executable='task_assignment_node',
         name='smrta_task_assignment_node',
         output='screen',
@@ -115,11 +116,11 @@ def generate_smrta_wrapper_nodes(context):
         }]
     )
     
-    # Robot Controller Nodes (one per robot)
+    # One per robot
     robot_controllers = []
     for namespace in namespaces:
         controller = Node(
-            package='smrta_wrapper',  
+            package='smrta_wrapper',
             executable='robot_controller_node',
             name=f'{namespace}_controller',
             output='screen',
@@ -152,7 +153,7 @@ def generate_launch_description():
     
     # Package directories
     multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
-    multi_robot_sim_config_dir = os.path.join(multi_robot_sim_dir, 'configs')
+    multi_robot_sim_config_dir = os.path.join(multi_robot_sim_dir, 'config')
     mrgc_pkg_dir = get_package_share_directory('multi_robot_costmap_plugin')
     
     # Launch configuration variables
@@ -240,6 +241,12 @@ def generate_launch_description():
         description='Path to task poses JSON file'
     )
     
+    declare_graph_nodes_file_cmd = DeclareLaunchArgument(
+        'graph_nodes_file',
+        default_value=os.path.join(multi_robot_sim_dir, 'config', 'graph_nodes.json'),
+        description='Path to graph nodes positions JSON file'
+    )
+
     # Set environment variable for TurtleBot3
     env_cmd = SetEnvironmentVariable(name='TURTLEBOT3_MODEL', value='waffle')
     
@@ -294,6 +301,7 @@ def generate_launch_description():
     ld.add_action(declare_mrgc_config_file_cmd)
     ld.add_action(declare_graph_file_cmd)
     ld.add_action(declare_task_poses_file_cmd)
+    ld.add_action(declare_graph_nodes_file_cmd)
     
     # Add environment variable
     ld.add_action(env_cmd)

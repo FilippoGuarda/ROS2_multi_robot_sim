@@ -109,7 +109,7 @@ def generate_launch_description():
     
     # Package directories
     multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
-    multi_robot_sim_config_dir = os.path.join(multi_robot_sim_dir, 'configs')
+    multi_robot_sim_config_dir = os.path.join(multi_robot_sim_dir, 'config')
     mrgc_pkg_dir = get_package_share_directory('multi_robot_costmap_plugin')
     
     # Launch configuration variables
