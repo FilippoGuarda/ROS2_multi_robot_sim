@@ -20,7 +20,7 @@ class SMrTaTaskAssignmentNode(Node):
         super().__init__('smrta_task_assignment_node')
         
         # Declare parameters
-        self.declare_parameter('graph_file', 'weighted_graph_p3.pkl')
+        self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph_p3.pkl')
         self.declare_parameter('capacity', 2)
         self.declare_parameter('num_aps', 5)
         self.declare_parameter('solver_name', 'z3')

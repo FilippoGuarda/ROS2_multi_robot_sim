@@ -132,7 +132,8 @@ def generate_smrta_wrapper_nodes(context):
         )
         robot_controllers.append(controller)
     
-    return [fleet_aggregator, task_assignment] + robot_controllers
+    # return [fleet_aggregator, task_assignment] + robot_controllers
+    return [fleet_aggregator] + robot_controllers
 
 def generate_launch_description():
     global ROBOT_POSITIONS
