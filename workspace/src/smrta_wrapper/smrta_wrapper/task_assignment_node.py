@@ -22,7 +22,6 @@ class SMrTaTaskAssignmentNode(Node):
         # Declare parameters
         self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph_p3.pkl')
         self.declare_parameter('capacity', 2)
-        self.declare_parameter('num_aps', 5)
         self.declare_parameter('solver_name', 'z3')
         self.declare_parameter('theory', 'QF_UFLIA')
         self.declare_parameter('allocation_period', 5.0)
@@ -30,7 +29,6 @@ class SMrTaTaskAssignmentNode(Node):
         # Get parameters
         self.graph_file = self.get_parameter('graph_file').get_parameter_value().string_value
         self.capacity = self.get_parameter('capacity').get_parameter_value().integer_value
-        self.num_aps = self.get_parameter('num_aps').get_parameter_value().integer_value
         self.solver_name = self.get_parameter('solver_name').get_parameter_value().string_value
         self.theory = self.get_parameter('theory').get_parameter_value().string_value
         self.allocation_period = self.get_parameter('allocation_period').get_parameter_value().double_value
@@ -69,7 +67,6 @@ class SMrTaTaskAssignmentNode(Node):
         
         self.get_logger().info(f'SMrTA Task Assignment Node initialized')
         self.get_logger().info(f'Graph file: {self.graph_file}')
-        self.get_logger().info(f'Capacity: {self.capacity}, Num APs: {self.num_aps}')
         self.get_logger().info(f'Solver: {self.solver_name}, Theory: {self.theory}')
         self.get_logger().info(f'Subscribing to: /fleet/robot_positions (FleetRobotPositions)')
         self.get_logger().info(f'Subscribing to: /fleet/tasks (FleetTasks)')
@@ -148,6 +145,9 @@ class SMrTaTaskAssignmentNode(Node):
                 task_objects.append(task_obj)
             
             tasks_stream = [(task_objects, 0)]
+
+            aps_list = list(range(self.room_count))
+            num_aps = aps_list[-1] if aps_list else 0
             
             # Run solver
             self.get_logger().info('Running SMrTA solver...')
@@ -158,7 +158,8 @@ class SMrTaTaskAssignmentNode(Node):
                 tasks_stream=tasks_stream,
                 room_graph=self.graph,
                 capacity=self.capacity,
-                num_aps=self.num_aps,
+                aps_list=aps_list,
+                num_aps=num_aps,
                 debug=False
             )
             
