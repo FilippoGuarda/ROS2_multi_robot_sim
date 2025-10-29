@@ -188,7 +188,8 @@ class SMrTaTaskAssignmentNode(Node):
                         
                         assignment = Assignment()
                         assignment.robot_id = robot_id
-                        assignment.task_ids = assigned_task_ids
+                
+                        assignment.task_ids = [str(task_id) for task_id in assigned_task_ids]
                         
                         fleet_assignments.assignments.append(assignment)
             
@@ -201,6 +202,9 @@ class SMrTaTaskAssignmentNode(Node):
         
         except Exception as e:
             self.get_logger().error(f'Error publishing assignments: {e}')
+            import traceback
+            self.get_logger().error(traceback.format_exc())
+
 
 def main(args=None):
     rclpy.init(args=args)
