@@ -5,10 +5,12 @@ from rclpy.node import Node
 from smrta_messages.msg import FleetRobotPositions, FleetTasks, FleetAssignments, Assignment
 import json
 import os
+import signal
 
 # Import SMrTA
 try:
     from MRTASolver.objects import Robot, Task
+    from MRTASolver.SolverInterface import Result
     from MRTASolver.MRTASolver import MRTASolver
     from MRTASolver.run_realistic_setting import load_weighted_graph, dictionary_to_matrix
     SMRTA_AVAILABLE = True
@@ -18,6 +20,8 @@ except ImportError:
 class SMrTaTaskAssignmentNode(Node):
     def __init__(self):
         super().__init__('smrta_task_assignment_node')
+        self._shutdown = False
+        signal.signal(signal.SIGINT, self._signal_handler)
         
         # Declare parameters
         self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph_p3.pkl')
@@ -89,6 +93,11 @@ class SMrTaTaskAssignmentNode(Node):
                 }
             }
         self.get_logger().debug(f"Received positions for {len(self.robot_states)} robots")
+
+    def _signal_handler(self, signum, frame):
+        """Handle Ctrl+C gracefully"""
+        self.get_logger().info('Shutdown requested')
+        self._shutdown = True
     
     def tasks_callback(self, msg):
         """Callback for FleetTasks message"""
@@ -104,6 +113,10 @@ class SMrTaTaskAssignmentNode(Node):
         self.get_logger().info(f"Received {len(self.tasks)} tasks")
     
     def run_smrta(self):
+
+        if self._shutdown:
+            return
+        
         if not self.robot_states:
             self.get_logger().debug("Waiting for robot positions...")
             return
@@ -163,7 +176,21 @@ class SMrTaTaskAssignmentNode(Node):
                 debug=False
             )
             
-            solution = solver.extract_model(solver.s)
+            if solver.s.res == Result.sat:
+                solution = solver.extract_model(solver.s)
+                if solution:
+                    self.publish_assignments(solution, robots)
+
+                    self.tasks = []
+                    self.get_logger().info('Tasks assigned and cleared')
+                else:
+                    self.get_logger().warn('Solver returned sat but no solution found')
+            elif solver.s.res == Result.unsat:
+                self.get_logger().warn('No solution exists for current tasks (unsat)')
+            elif solver.s.res == Result.unknown:
+                self.get_logger().warn('Solver interrupted or timeout (unknown)')
+            else:
+                self.get_logger().error(f'Unexpected solver result: {solver.s.res}')
             
             if solution:
                 self.publish_assignments(solution, robots)
@@ -184,19 +211,26 @@ class SMrTaTaskAssignmentNode(Node):
                 for idx, robot_data in enumerate(solution['agt']):
                     if idx < len(robots):
                         robot_id = robots[idx].id
-                        assigned_task_ids = robot_data.get('id', [])
                         
-                        assignment = Assignment()
-                        assignment.robot_id = robot_id
-                
-                        assignment.task_ids = [str(task_id) for task_id in assigned_task_ids]
+                        # Extract unique tasks from schedule
+                        schedule = robot_data.get('id', [])
+                        unique_tasks = []
+                        seen = set()
+                        for task_id in schedule:
+                            if task_id != 0 and task_id not in seen:
+                                unique_tasks.append(task_id)
+                                seen.add(task_id)
                         
-                        fleet_assignments.assignments.append(assignment)
+                        # Only add if robot has tasks
+                        if unique_tasks:
+                            assignment = Assignment()
+                            assignment.robot_id = str(robot_id)
+                            assignment.task_ids = [str(task_id) for task_id in unique_tasks]
+                            fleet_assignments.assignments.append(assignment)
             
             self.assignment_pub.publish(fleet_assignments)
             self.get_logger().info(f"Published assignments for {len(fleet_assignments.assignments)} robots")
             
-            # Log the assignments
             for assignment in fleet_assignments.assignments:
                 self.get_logger().info(f"  {assignment.robot_id}: {assignment.task_ids}")
         
@@ -214,10 +248,14 @@ def main(args=None):
         try:
             rclpy.spin(node)
         except KeyboardInterrupt:
-            pass
+            node.get_logger().info('Keyboard interrupt received')
         finally:
-            node.destroy_node()
+            try:
+                node.destroy_node()
+            except:
+                pass 
             rclpy.shutdown()
+
     else:
         node.get_logger().error('Cannot start node without SMrTA solver')
         node.destroy_node()
