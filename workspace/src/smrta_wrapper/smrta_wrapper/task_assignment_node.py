@@ -24,7 +24,7 @@ class SMrTaTaskAssignmentNode(Node):
         signal.signal(signal.SIGINT, self._signal_handler)
         
         # Declare parameters
-        self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph_p3.pkl')
+        self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph.pkl')
         self.declare_parameter('capacity', 2)
         self.declare_parameter('solver_name', 'z3')
         self.declare_parameter('theory', 'QF_UFLIA')

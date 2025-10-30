@@ -232,7 +232,7 @@ def generate_launch_description():
     # SMrTA-specific launch arguments
     declare_graph_file_cmd = DeclareLaunchArgument(
         'graph_file',
-        default_value=os.path.join(multi_robot_sim_dir, 'config', 'weighted_graph_p3.pkl'),
+        default_value=os.path.join(multi_robot_sim_dir, 'config', 'weighted_graph.pkl'),
         description='Path to SMrTA graph file'
     )
     
