@@ -25,7 +25,7 @@ class SMrTaTaskAssignmentNode(Node):
 
         self.declare_parameter('graph_file', '/home/workspace/src/multi_robot_sim/config/weighted_graph.pkl')
         self.declare_parameter('node_mapping_file', '/home/workspace/src/multi_robot_sim/config/node_mapping.json')
-        self.declare_parameter('capacity', 2)
+        self.declare_parameter('capacity', 1)
         self.declare_parameter('solver_name', 'z3')
         self.declare_parameter('theory', 'QF_UFLIA')
         self.declare_parameter('allocation_period', 5.0)
@@ -123,6 +123,22 @@ class SMrTaTaskAssignmentNode(Node):
         
         return self.seq_to_original[seq_id]
     
+    def find_closest_node(self, robot_pose):
+        """Find the closest graph node to a robot's current position"""
+        if self.graph is None or self.room_count is None:
+            return 0
+        
+        # If robot already has a valid graph_node_id, use it
+        graph_node = robot_pose.get('graph_node_id', None)
+        if graph_node is not None and 0 <= graph_node < self.room_count:
+            seq_node = self.convert_original_to_seq(graph_node)
+            if 0 <= seq_node < self.room_count:
+                return seq_node
+        
+        # Otherwise, compute closest node (fallback - requires node positions)
+        self.get_logger().warn(f"Robot at invalid node, using fallback")
+        return 0  # Default fallback
+    
     def positions_callback(self, msg):
         """Callback for FleetRobotPositions message"""
         self.robot_states = {}
@@ -160,8 +176,6 @@ class SMrTaTaskAssignmentNode(Node):
         self.get_logger().info(f"Received {len(self.tasks)} tasks")
     
     def run_smrta(self):
-        if self._shutdown:
-            return
         
         if not self.robot_states:
             self.get_logger().debug("Waiting for robot positions...")
@@ -190,20 +204,21 @@ class SMrTaTaskAssignmentNode(Node):
             
             # Prepare robots - CONVERT from original to sequential IDs
             robots = []
-            for robot_id, pose in self.robot_states.items():
-                original_position = pose.get('graph_node_id', 0)
-                # Convert original ID to sequential ID
-                seq_position = self._convert_original_to_seq(original_position)
+            for robot_id, robot_pose in self.robot_states.items():
+                # Use the robot's current graph node as home position
+                home_node_seq = self.find_closest_node(robot_pose)
                 
-                if seq_position >= self.room_count:
+                if home_node_seq >= self.room_count:
                     self.get_logger().error(
-                        f"Robot {robot_id}: sequential position {seq_position} >= graph size {self.room_count}"
+                        f"Robot {robot_id} home node {home_node_seq} >= "
+                        f"graph size {self.room_count}"
                     )
                     continue
                 
-                robots.append(Robot(robot_id, seq_position))
-                self.get_logger().debug(f"Robot {robot_id}: original node {original_position} → sequential {seq_position}")
-            
+                robots.append(Robot(robot_id, home_node_seq))
+                self.get_logger().debug(
+                    f"Robot {robot_id} home node (sequential): {home_node_seq}"
+                )            
 
             task_objects = []
             for t in self.tasks:
@@ -286,25 +301,41 @@ class SMrTaTaskAssignmentNode(Node):
         """Publish task assignments"""
         try:
             fleet_assignments = FleetAssignments()
+            num_agents = len(robots)
             
             if 'agt' in solution:
                 for idx, robot_data in enumerate(solution['agt']):
                     if idx < len(robots):
                         robot_id = robots[idx].id
                         
-                        # Extract unique tasks from schedule
+                        # Extract schedule and convert action IDs to task IDs
                         schedule = robot_data.get('id', [])
                         unique_tasks = []
                         seen = set()
-                        for task_id in schedule:
-                            if task_id != 0 and task_id not in seen:
-                                unique_tasks.append(task_id)
-                                seen.add(task_id)
+                        
+                        for action_id in schedule:
+                            # Skip robot home positions
+                            if action_id <= num_agents:
+                                continue
+                            
+                            # Convert action_id to task_id
+                            # Action IDs: pickup = 2*task_idx + num_agents
+                            #            dropoff = 2*task_idx + 1 + num_agents
+                            task_action_offset = action_id - num_agents
+                            task_idx = task_action_offset // 2
+                            
+                            # Only count each task once (pickup action)
+                            if task_action_offset % 2 == 0 and task_idx not in seen:
+                                # Get original task_id from self.tasks
+                                if task_idx < len(self.tasks):
+                                    original_task_id = self.tasks[task_idx]['id']
+                                    unique_tasks.append(original_task_id)
+                                    seen.add(task_idx)
                         
                         if unique_tasks:
                             assignment = Assignment()
                             assignment.robot_id = str(robot_id)
-                            assignment.task_ids = [str(task_id) for task_id in unique_tasks]
+                            assignment.task_ids = [str(tid) for tid in unique_tasks]
                             fleet_assignments.assignments.append(assignment)
             
             self.assignment_pub.publish(fleet_assignments)
@@ -316,6 +347,7 @@ class SMrTaTaskAssignmentNode(Node):
             self.get_logger().error(f'Error publishing assignments: {e}')
             import traceback
             self.get_logger().error(traceback.format_exc())
+
 
 def main(args=None):
     rclpy.init(args=args)

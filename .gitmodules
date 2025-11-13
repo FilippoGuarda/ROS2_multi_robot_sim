@@ -4,3 +4,6 @@
 [submodule "workspace/src/SMrTa"]
 	path = workspace/src/SMrTa
 	url = https://github.com/victoria-tuck/SMrTa
+[submodule "workspace/src/mppi_multi_robot_critic"]
+	path = workspace/src/mppi_multi_robot_critic
+	url = https://github.com/FilippoGuarda/mppi_multi_robot_critic.git
