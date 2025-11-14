@@ -6,6 +6,7 @@ from smrta_messages.msg import FleetRobotPositions, FleetTasks, FleetAssignments
 import json
 import os
 import signal
+import math
 
 # Import SMrTA
 try:
@@ -176,66 +177,56 @@ class SMrTaTaskAssignmentNode(Node):
         self.get_logger().info(f"Received {len(self.tasks)} tasks")
     
     def run_smrta(self):
-        
         if not self.robot_states:
             self.get_logger().debug("Waiting for robot positions...")
             return
-        
+
         if not self.tasks:
             self.get_logger().debug("Waiting for tasks...")
             return
-        
+
         if not SMRTA_AVAILABLE:
             return
-        
+
         solution = None
-        
+
         try:
             # Load graph if needed
             if self.graph is None or self.room_count is None:
                 if not os.path.exists(self.graph_file):
                     self.get_logger().error(f'Graph file not found: {self.graph_file}')
                     return
-                
+
                 self.get_logger().info(f'Loading graph from {self.graph_file}')
                 room_dictionary = load_weighted_graph(self.graph_file)
                 self.room_count, self.graph = dictionary_to_matrix(room_dictionary)
                 self.get_logger().info(f'Graph loaded: {self.room_count} rooms (sequential IDs)')
-            
-            # Prepare robots - CONVERT from original to sequential IDs
+
+            # Prepare robots - convert from original to sequential IDs
             robots = []
             for robot_id, robot_pose in self.robot_states.items():
-                # Use the robot's current graph node as home position
                 home_node_seq = self.find_closest_node(robot_pose)
-                
+
                 if home_node_seq >= self.room_count:
                     self.get_logger().error(
-                        f"Robot {robot_id} home node {home_node_seq} >= "
-                        f"graph size {self.room_count}"
-                    )
+                        f"Robot {robot_id} home node {home_node_seq} >= graph size {self.room_count}")
                     continue
-                
-                robots.append(Robot(robot_id, home_node_seq))
-                self.get_logger().debug(
-                    f"Robot {robot_id} home node (sequential): {home_node_seq}"
-                )            
 
+                robots.append(Robot(robot_id, home_node_seq))
+                self.get_logger().debug(f"Robot {robot_id} home node (sequential): {home_node_seq}")
+
+            # Prepare tasks as Task objects
             task_objects = []
             for t in self.tasks:
-                original_start = t['start']
-                original_end = t['end']
-                
+                seq_start = self._convert_original_to_seq(t['start'])
+                seq_end = self._convert_original_to_seq(t['end'])
 
-                seq_start = self._convert_original_to_seq(original_start)
-                seq_end = self._convert_original_to_seq(original_end)
-                
                 if seq_start >= self.room_count or seq_end >= self.room_count:
                     self.get_logger().error(
-                        f"Task {t['id']}: converted to {seq_start} → {seq_end}, "
-                        f"exceeds graph size {self.room_count}"
+                        f"Task {t['id']}: converted to {seq_start} → {seq_end}, exceeds graph size {self.room_count}"
                     )
                     continue
-                
+
                 task_obj = Task(
                     t['id'],
                     seq_start,
@@ -244,20 +235,30 @@ class SMrTaTaskAssignmentNode(Node):
                 )
                 task_objects.append(task_obj)
                 self.get_logger().debug(
-                    f"Task {t['id']}: original {original_start} → {original_end}, "
-                    f"sequential {seq_start} → {seq_end}"
+                    f"Task {t['id']}: original {t['start']} → {t['end']}, sequential {seq_start} → {seq_end}"
                 )
-            
+
             if not robots or not task_objects:
                 self.get_logger().error('No valid robots or tasks after conversion')
                 return
-            
+
             tasks_stream = [(task_objects, 0)]
-            aps_list = list(range(self.room_count))
-            num_aps = aps_list[-1] if aps_list else 0
-            
+
+            num_tasks = len(task_objects)
+            num_robots = len(robots)
+
+            # Calculate minimum required action points (decision points)
+            min_aps = 2 * num_tasks + max(1, num_robots) + 1
+            aps_list = list(range(3, min_aps+1, 2))  
+            if not aps_list:
+                aps_list = [3]
+            num_aps = aps_list[-1]
+            num_aps = aps_list[-1]
+
+            self.get_logger().info(f'Running SMrTA solver with {num_tasks} tasks, {num_robots} robots, min_aps {min_aps}')
+            self.get_logger().info(f'Using aps_list: {aps_list} and num_aps: {num_aps}')
+
             # Run solver
-            self.get_logger().info('Running SMrTA solver...')
             solver = MRTASolver(
                 solver_name=self.solver_name,
                 theory=self.theory,
@@ -269,7 +270,7 @@ class SMrTaTaskAssignmentNode(Node):
                 num_aps=num_aps,
                 debug=False
             )
-            
+
             # Handle results
             if solver.s.res == Result.sat:
                 self.get_logger().info('Solver found a solution (sat)')
@@ -280,71 +281,82 @@ class SMrTaTaskAssignmentNode(Node):
                     self.get_logger().info('Tasks assigned and cleared')
                 else:
                     self.get_logger().warn('Solver returned sat but failed to extract solution')
-            
+
             elif solver.s.res == Result.unsat:
                 self.get_logger().warn('No solution exists for current tasks (unsat)')
-                self.get_logger().warn(f'  Robots: {len(robots)}, Tasks: {len(task_objects)}, Nodes: {self.room_count}')
+                self.get_logger().warn(f'  Robots: {num_robots}, Tasks: {num_tasks}, Nodes: {self.room_count}')
                 self.get_logger().warn('  Check robot positions and task nodes are valid')
-            
+
             elif solver.s.res == Result.unknown:
                 self.get_logger().warn('Solver timeout or interrupted (unknown)')
-            
+
             else:
                 self.get_logger().error(f'Unexpected solver result: {solver.s.res}')
-        
+
         except Exception as e:
             self.get_logger().error(f'Error running SMrTA: {e}')
             import traceback
             self.get_logger().error(traceback.format_exc())
     
     def publish_assignments(self, solution, robots):
-        """Publish task assignments"""
+        """Publish task assignments with detailed logging and safety checks"""
         try:
             fleet_assignments = FleetAssignments()
             num_agents = len(robots)
-            
+            assigned_tasks_overall = set()
+
             if 'agt' in solution:
                 for idx, robot_data in enumerate(solution['agt']):
-                    if idx < len(robots):
-                        robot_id = robots[idx].id
-                        
-                        # Extract schedule and convert action IDs to task IDs
-                        schedule = robot_data.get('id', [])
-                        unique_tasks = []
-                        seen = set()
-                        
-                        for action_id in schedule:
-                            # Skip robot home positions
-                            if action_id <= num_agents:
+                    if idx >= len(robots):
+                        self.get_logger().warn(f"Solver solution includes unexpected robot index {idx}")
+                        continue
+
+                    robot_id = robots[idx].id
+                    schedule = robot_data.get('id', [])
+                    unique_tasks = []
+                    seen_task_idxs = set()
+
+                    self.get_logger().debug(f"Processing assignments for robot {robot_id} with schedule length {len(schedule)}")
+
+                    for action_id in schedule:
+                        # Ignore robot home positions (action ids < num_agents or equal)
+                        if action_id <= num_agents:
+                            continue
+
+                        # Convert action to task index
+                        task_action_offset = action_id - num_agents
+                        task_idx = task_action_offset // 2
+
+                        # Pickup actions only (even offsets) count as assignment
+                        if task_action_offset % 2 == 0:
+                            if task_idx in seen_task_idxs:
                                 continue
-                            
-                            # Convert action_id to task_id
-                            # Action IDs: pickup = 2*task_idx + num_agents
-                            #            dropoff = 2*task_idx + 1 + num_agents
-                            task_action_offset = action_id - num_agents
-                            task_idx = task_action_offset // 2
-                            
-                            # Only count each task once (pickup action)
-                            if task_action_offset % 2 == 0 and task_idx not in seen:
-                                # Get original task_id from self.tasks
-                                if task_idx < len(self.tasks):
-                                    original_task_id = self.tasks[task_idx]['id']
-                                    unique_tasks.append(original_task_id)
-                                    seen.add(task_idx)
-                        
-                        if unique_tasks:
-                            assignment = Assignment()
-                            assignment.robot_id = str(robot_id)
-                            assignment.task_ids = [str(tid) for tid in unique_tasks]
-                            fleet_assignments.assignments.append(assignment)
-            
+                            if task_idx >= len(self.tasks):
+                                self.get_logger().warn(f"Task index {task_idx} out of range for tasks list size {len(self.tasks)}")
+                                continue
+
+                            task_id = self.tasks[task_idx]['id']
+                            unique_tasks.append(task_id)
+                            seen_task_idxs.add(task_idx)
+                            assigned_tasks_overall.add(task_id)
+                            self.get_logger().info(f"Robot {robot_id} assigned to task {task_id} (task_idx {task_idx}, action_id {action_id})")
+
+                    if unique_tasks:
+                        assignment = Assignment()
+                        assignment.robot_id = str(robot_id)
+                        assignment.task_ids = [str(tid) for tid in unique_tasks]
+                        fleet_assignments.assignments.append(assignment)
+                    else:
+                        self.get_logger().info(f"Robot {robot_id} has no assigned tasks in this solution.")
+
+            else:
+                self.get_logger().warn("No agent assignments found in solver solution.")
+
             self.assignment_pub.publish(fleet_assignments)
-            self.get_logger().info(f"Published assignments for {len(fleet_assignments.assignments)} robots")
-            for assignment in fleet_assignments.assignments:
-                self.get_logger().info(f"  {assignment.robot_id}: {assignment.task_ids}")
-        
+            self.get_logger().info(f"Published assignments for {len(fleet_assignments.assignments)} robots; total assigned tasks: {len(assigned_tasks_overall)}")
+
         except Exception as e:
-            self.get_logger().error(f'Error publishing assignments: {e}')
+            self.get_logger().error(f"Error publishing assignments: {e}")
             import traceback
             self.get_logger().error(traceback.format_exc())
 
