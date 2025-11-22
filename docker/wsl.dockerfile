@@ -86,7 +86,7 @@ WORKDIR /home/workspace
 # Aliases (unchanged as they work fine in WSL2)
 RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world hospital.launch.py input_file:=/home/workspace/install/multi_robot_sim/share/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc && \
     echo "alias rnav2='ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=/home/workspace/src/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc && \
-    echo "alias gcostmap=' ros2 launch multi_robot_costmap_plugin multi_robot_costmap_launch.py'" >> ~/.bashrc && \
-    echo "alias rsmrta ='ros2 launch multi_robot_sim smrta_multi_robot_launch.py input_file:=/home/workspace/src/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc 
+    echo "alias gcostmap='ros2 launch multi_robot_costmap_plugin multi_robot_costmap_launch.py'" >> ~/.bashrc && \
+    echo "alias rsmrta='ros2 launch multi_robot_sim smrta_multi_robot_launch.py input_file:=/home/workspace/src/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc 
 
 # ENTRYPOINT [ "/bin/bash -i ros2 launcnh aws_robomaker_hospital_world view_hospital.launch.py" ]

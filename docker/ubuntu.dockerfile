@@ -70,4 +70,3 @@ WORKDIR /home/workspace
 
 RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py'" >> ~/.bashrc
 RUN echo "alias rnav2='ros2 launch multi_robot_sim nav2_tb3_aws_launch.py'" >> ~/.bashrc
-RUN ec
