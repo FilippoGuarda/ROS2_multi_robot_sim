@@ -1524,6 +1524,7 @@
         <uri>model://turtlebot3_world</uri>
       </include>
     </model> -->
-
+    
+  <plugin name="gazebo_ros_factory" filename="libgazebo_ros_factory.so"/>
   </world>
 </sdf>

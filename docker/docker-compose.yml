@@ -12,7 +12,6 @@ services:
       - CYCLONEDDS_URI=${CYCLONEDDS_URI}
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
-      - ENV GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/workspace/src/aws-robomaker-hospital-world/models:/home/workspace/src/aws-robomaker-hospital-world/fuel_models
     network_mode: host
     runtime: nvidia
     privileged: true
