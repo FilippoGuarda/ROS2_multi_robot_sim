@@ -17,14 +17,14 @@ If you want to use wsl, it takes as a given that the WSL2 environment is set up 
 This documentation is for the `main` branch of `ROS2_multi_robot_sim` repository.
 
 To setup the Multi robot costmap plugin, first add the submodules by running
-```
+```bash
 
 git submodule init
-git submodule update
+git submodule update --recursive
 ```
 
 Then to build the environment, run
-```
+``` bash
 # For WSL2
 COMPOSE_PROFILES=wsl docker-compose up 
 # For Linux
@@ -35,6 +35,18 @@ docker exec -it multi-robot-task-allocation-stack-ros-1 bash
 ```
 from the highest level of the repository where `<service>` is `ubuntu` or `wsl` depending on your operating system.
 
+### Important
+
+SMRTA must be installed as a package, after cloning the repository, navigate into the SMRTA folder and 
+``` bash
+
+cd /home/workspace/src/SMrTA
+pip install -r requirements.txt
+# From the SMrTA folder 
+cd bitwuzla
+pip install .
+```
+
 Now, you have to first build the colcon (ROS2) workspace. Navigate to
 ```
 cd /home/colcon_ws
@@ -43,11 +55,11 @@ colcon build --symlink-install
 Note sometimes ROS does not figure out package dependency order properly when multiple ROS packages are present. In this case, it may take multiple runs of colcon build to be successful. If one error is shown, after this step, you can still proceed successfully.
 
 Now source the installed packages with following command
-```
+``` bash
 source ~/.bashrc
 ```
 Finally, to give docker environment permission to use graphics of hist machine, run the following command **from host machine**
-```
+``` bash
 xhost +
 ```
 
