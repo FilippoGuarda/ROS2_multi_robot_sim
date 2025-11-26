@@ -95,9 +95,16 @@ multi_robot_costmap_launch.py
 3. To launch the ROS2 navigation stack (to use its planners)
 
 ```
-rnav2
+rsmrta
 ```
 Example:
 ```
  ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<input_file_path>
+```
+
+4. To send tasks to the allocation stack:
+
+``` bash 
+
+
 ```
