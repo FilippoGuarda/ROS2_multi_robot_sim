@@ -102,9 +102,12 @@ Example:
  ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<input_file_path>
 ```
 
-4. To send tasks to the allocation stack:
+4. Here is an example to send tasks to the allocation stack:
 
 ``` bash 
 
-
+# Two tasks
+ros2 run smrta_wrapper task_publisher_cli 1,3,11,400000000 2,26,55,20000000
+# Four tasks
+ros2 run smrta_wrapper task_publisher_cli 2,153,178,400000000 3,47,209,20000000 4,249,17,400000000 5,223,250,20000000
 ```
