@@ -27,22 +27,15 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     curl \
     python3.10-dev \
-    # ros-humble-navigation2 \
-    # ros-humble-nav2-bringup \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup \
     ros-humble-turtlebot3* \
-    # ros-humble-nav2-simple-commander \ 
+    ros-humble-nav2-simple-commander \ 
     ros-humble-rqt-tf-tree \
     ros-humble-topic-tools \
     ros-humble-robot-localization \
-    # ros-humble-nav2-msgs \
-    libgraphicsmagick++1-dev \
-    ros-humble-bond ros-humble-bondcpp \
-    ros-humble-behaviortree-cpp \
-    ros-humble-geometry-msgs \
-    ros-humble-nav-msgs \
-    ros-humble-tf2* \
+    ros-humble-nav2-msgs \
     && rm -rf /var/lib/apt/lists/* 
-
 
 # Python setup
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10

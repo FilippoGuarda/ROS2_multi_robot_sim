@@ -22,18 +22,17 @@ https://github.com/ros-navigation/navigation2/blob/galactic/nav2_bringup/bringup
 
 
 import os
-import json
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, GroupAction, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, GroupAction
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node, PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace, SetParameter
+from launch_ros.parameter_descriptions import ParameterValue
 from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     multi_robot_sim_dir = get_package_share_directory('multi_robot_sim')
     
-    # LaunchConfigurations - keep as Substitution objects
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
@@ -41,40 +40,38 @@ def generate_launch_description():
     initial_pose_x = LaunchConfiguration('initial_pose_x')
     initial_pose_y = LaunchConfiguration('initial_pose_y')
     initial_pose_yaw = LaunchConfiguration('initial_pose_yaw')
-    other_robot_namespaces = LaunchConfiguration('other_robot_namespaces')
     
     # Declare launch arguments
     declare_namespace_cmd = DeclareLaunchArgument(
-        'namespace', default_value='robot1', description='Top-level namespace')
+        'namespace', default_value='robot1', description='Top-level namespace for the robot')
     
     declare_use_sim_time_cmd = DeclareLaunchArgument(
-        'use_sim_time', default_value='True', description='Use simulation clock')
+        'use_sim_time', default_value='True', description='Use simulation (Gazebo) clock if true')
     
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
         default_value=os.path.join(multi_robot_sim_dir, 'config', 'nav2_params.yaml'),
-        description='Path to params file')
+        description='Full path to the ROS2 parameters file')
     
     declare_autostart_cmd = DeclareLaunchArgument(
-        'autostart', default_value='true', description='Auto start nav2 stack')
+        'autostart', default_value='true', description='Automatically startup the nav2 stack')
     
     declare_initial_pose_x_cmd = DeclareLaunchArgument(
-        'initial_pose_x', default_value='0.0')
+        'initial_pose_x', default_value='0.0', description='Initial pose X coordinate')
+    
     declare_initial_pose_y_cmd = DeclareLaunchArgument(
-        'initial_pose_y', default_value='0.0')
+        'initial_pose_y', default_value='0.0', description='Initial pose Y coordinate')
+    
     declare_initial_pose_yaw_cmd = DeclareLaunchArgument(
-        'initial_pose_yaw', default_value='0.0')
-    
-    declare_other_robots_cmd = DeclareLaunchArgument(
-        'other_robot_namespaces', default_value='[]', 
-        description='JSON list of other robots')
-    
-    # RewrittenYaml created with LaunchConfiguration objects
+        'initial_pose_yaw', default_value='0.0', description='Initial pose Yaw angle')
+
+    # This forces correct substitutions in the various parameter files
     param_substitutions = {
         'use_sim_time': use_sim_time,
-        'robot_base_frame': [namespace, '/base_footprint'],
+        'robot_base_frame': [namespace, '/base_footprint'], 
         'odom_frame_id': [namespace, '/odom'],
         'base_frame_id': [namespace, '/base_footprint'],
+        'robot_base_frame': [namespace, '/base_footprint'], 
         'global_frame': [namespace, '/odom'],
         'topic': ['/', namespace, '/scan'],
         'costmap_topic': [namespace, '/local_costmap/costmap_raw'],
@@ -108,13 +105,19 @@ def generate_launch_description():
         output='screen',
         parameters=[
             configured_params,
-            {
-                'set_initial_pose': True,
-                'initial_pose.x': initial_pose_x,
-                'initial_pose.y': initial_pose_y,
-                'initial_pose.yaw': initial_pose_yaw
-            }
+            {'set_initial_pose': True,
+             'initial_pose.x': initial_pose_x,
+             'initial_pose.y': initial_pose_y,
+             'initial_pose.yaw': initial_pose_yaw}
         ],
+        remappings=remappings)
+    
+    controller_server_node = Node(
+        package='nav2_controller',
+        executable='controller_server',
+        name='controller_server',
+        output='screen',
+        parameters=[configured_params],
         remappings=remappings)
     
     planner_server_node = Node(
@@ -122,7 +125,16 @@ def generate_launch_description():
         executable='planner_server',
         name='planner_server',
         output='screen',
-        parameters=[configured_params_global_cost],
+        parameters=[
+            configured_params_global_cost
+            # {
+            # 'multi_robot_layer.robot_namespace': namespace,
+            # 'multi_robot_layer.enabled': True,
+            # 'multi_robot_layer.shared_grid_topic': '/shared_obstacles_grid',
+            # 'multi_robot_layer.robot_radius': 0.3,
+            # 'multi_robot_layer.exclusion_buffer': 0.5
+            # }
+        ],
         remappings=remappings)
     
     bt_navigator_node = Node(
@@ -135,7 +147,7 @@ def generate_launch_description():
     
     behavior_server_node = Node(
         package='nav2_behaviors',
-        executable='behavior_server',
+        executable='behavior_server', 
         name='behavior_server',
         output='screen',
         parameters=[configured_params_global_cost],
@@ -146,41 +158,14 @@ def generate_launch_description():
         executable='lifecycle_manager',
         name='lifecycle_manager_navigation',
         output='screen',
-        parameters=[{
-            'autostart': autostart,
-            'node_names': [
-                'amcl',
-                'controller_server',
-                'planner_server',
-                'behavior_server',
-                'bt_navigator'
-            ]
-        }])
-    
-    # OpaqueFunction ONLY for controller_server (needs dynamic tracked_agents)
-    def create_controller_server(context):
-        other_robots_json = context.launch_configurations.get('other_robot_namespaces', '[]')
-        
-        try:
-            other_namespaces = json.loads(other_robots_json)
-        except (json.JSONDecodeError, TypeError):
-            other_namespaces = []
-        
-        tracked_agents = [f"{ns}/base_footprint" for ns in other_namespaces]
-        
-        return [Node(
-            package='nav2_controller',
-            executable='controller_server',
-            name='controller_server',
-            output='screen',
-            parameters=[
-                configured_params,
-                {
-                    'FollowPath.InteractionAwareCritic.plugin': "mppi_multi_robot_critic/InteractionAwareCritic",
-                    'FollowPath.InteractionAwareCritic.tracked_agents': tracked_agents
-                }
-            ],
-            remappings=remappings)]
+        parameters=[{'autostart': autostart,
+                     'node_names': [
+                         'amcl',
+                         'controller_server',
+                         'planner_server',
+                         'behavior_server',
+                         'bt_navigator'
+                         ]}])
     
     ld = LaunchDescription()
     
@@ -191,14 +176,15 @@ def generate_launch_description():
     ld.add_action(declare_initial_pose_x_cmd)
     ld.add_action(declare_initial_pose_y_cmd)
     ld.add_action(declare_initial_pose_yaw_cmd)
-    ld.add_action(declare_other_robots_cmd)
+    
+    ld.add_action(SetParameter(name='use_sim_time', value=use_sim_time))
     
     nav2_bringup_group = GroupAction([
         PushRosNamespace(namespace=namespace),
         
         # Add all the nodes that need to be namespaced
         amcl_node,
-        OpaqueFunction(function=create_controller_server),
+        controller_server_node,
         planner_server_node,
         behavior_server_node,
         bt_navigator_node,
