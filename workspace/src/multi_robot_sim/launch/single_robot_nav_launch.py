@@ -79,7 +79,7 @@ def generate_launch_description():
         'topic': ['/', namespace, '/scan'],
         'costmap_topic': [namespace, '/local_costmap/costmap_raw'],
         'footprint_topic': [namespace, '/local_costmap/published_footprint'],
-        'robot_namespace': namespace
+        'robot_namespace': namespace,
     }
     
     configured_params = RewrittenYaml(
@@ -112,8 +112,8 @@ def generate_launch_description():
                 'set_initial_pose': True,
                 'initial_pose.x': initial_pose_x,
                 'initial_pose.y': initial_pose_y,
-                'initial_pose.yaw': initial_pose_yaw
-            }
+                'initial_pose.yaw': initial_pose_yaw,
+            },
         ],
         remappings=remappings)
     
@@ -153,21 +153,25 @@ def generate_launch_description():
                 'controller_server',
                 'planner_server',
                 'behavior_server',
-                'bt_navigator'
-            ]
+                'bt_navigator',
+            ],
         }])
     
-    # OpaqueFunction ONLY for controller_server (needs dynamic tracked_agents)
     def create_controller_server(context):
-        other_robots_json = context.launch_configurations.get('other_robot_namespaces', '[]')
-        
+        """
+        Creates controller_server node with MultiAgentInteractionCritic enabled.
+
+        other_robot_namespaces is passed from the multi-robot launch file as a JSON list
+        of namespaces (e.g., ["robot1", "robot2", ...]). The critic uses this list to
+        subscribe to /<ns>/mppi_controller/trajectory for other robots.
+        """
+        other_robots_json = context.launch_configurations.get(
+            'other_robot_namespaces', '[]')
         try:
             other_namespaces = json.loads(other_robots_json)
         except (json.JSONDecodeError, TypeError):
             other_namespaces = []
-        
-        tracked_agents = [f"{ns}/base_footprint" for ns in other_namespaces]
-        
+
         return [Node(
             package='nav2_controller',
             executable='controller_server',
@@ -175,10 +179,13 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 configured_params,
+                # Ensure MPPI publishes its optimal trajectory
+                {'FollowPath.publish_trajectory': True},
+                # Pass the list of other robot namespaces to the critic
                 {
-                    'FollowPath.InteractionAwareCritic.plugin': "mppi_multi_robot_critic/InteractionAwareCritic",
-                    'FollowPath.InteractionAwareCritic.tracked_agents': tracked_agents
-                }
+                    'FollowPath.MultiAgentInteractionCritic.other_robot_namespaces':
+                        other_namespaces
+                },
             ],
             remappings=remappings)]
     
@@ -192,17 +199,15 @@ def generate_launch_description():
     ld.add_action(declare_initial_pose_y_cmd)
     ld.add_action(declare_initial_pose_yaw_cmd)
     ld.add_action(declare_other_robots_cmd)
-    
+
     nav2_bringup_group = GroupAction([
         PushRosNamespace(namespace=namespace),
-        
-        # Add all the nodes that need to be namespaced
         amcl_node,
         OpaqueFunction(function=create_controller_server),
         planner_server_node,
         behavior_server_node,
         bt_navigator_node,
-        lifecycle_manager_node
+        lifecycle_manager_node,
     ])
     
     ld.add_action(nav2_bringup_group)

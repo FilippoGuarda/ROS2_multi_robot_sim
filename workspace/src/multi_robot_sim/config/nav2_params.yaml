@@ -224,7 +224,7 @@ controller_server:
       MultiAgentInteractionCritic:
         enabled: true                   # Set to false to disable multi-agent collision avoidance
         cost_power: 1                   # Power for cost calculation
-        cost_weight: 50.0               # ⭐ CRITICAL TUNING PARAMETER
+        cost_weight: 50.0               # CRITICAL TUNING PARAMETER
                                         # Relative importance vs other critics
                                         # Higher = more aggressive collision avoidance
                                         # Try: 30 (relaxed), 50 (balanced), 100+ (conservative)
@@ -318,7 +318,7 @@ planner_server:
     use_sim_time: True
     planner_plugins: ["GridBased"]
     GridBased:
-      plugin: "nav2_smac_planner/SmacPlanner2D"
+      plugin: "nav2_theta_star_planner::ThetaStarPlanner"
       tolerance: 0.25
       use_astar: false
       allow_unknown: true
