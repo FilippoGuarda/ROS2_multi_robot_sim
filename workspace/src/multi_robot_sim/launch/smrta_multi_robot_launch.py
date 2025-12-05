@@ -5,7 +5,12 @@ import json
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, SetEnvironmentVariable
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+    SetEnvironmentVariable
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -59,9 +64,15 @@ def generate_robot_launches(context):
         try:
             initial_pose = ROBOT_POSITIONS[i]
         except (IndexError, KeyError):
-            error_msg = f"Missing position input for robot {i} in namespace '{namespace}'. Use input_file:= at launch"
+            error_msg = (f"Missing position input for robot {i} in namespace '{namespace}'. "
+                        "Use input_file:= at launch")
             print(f"[ERROR] {error_msg}")
             sys.exit(1)
+        
+        # Build list of OTHER robot namespaces (exclude current robot)
+        # These will be tracked by the interaction-aware critic
+        other_namespaces = [ns for ns in namespaces if ns != namespace]
+        other_namespaces_json = json.dumps(other_namespaces)
         
         robot_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -75,6 +86,7 @@ def generate_robot_launches(context):
                 'initial_pose_x': str(initial_pose['x']),
                 'initial_pose_y': str(initial_pose['y']),
                 'initial_pose_yaw': str(initial_pose['yaw']),
+                'other_robot_namespaces': other_namespaces_json,  # NEW: JSON list of other robots
             }.items()
         )
         
@@ -95,7 +107,7 @@ def generate_smrta_wrapper_nodes(context):
         parameters=[{
             'robot_namespaces': namespaces,
             'use_sim_time': LaunchConfiguration('use_sim_time').perform(context),
-            'graph_nodes_file': LaunchConfiguration('graph_nodes_file').perform(context)  # NEW
+            'graph_nodes_file': LaunchConfiguration('graph_nodes_file').perform(context)
         }]
     )
     
