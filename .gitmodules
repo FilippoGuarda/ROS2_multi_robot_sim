@@ -10,3 +10,6 @@
 [submodule "workspace/src/navigation2"]
 	path = workspace/src/navigation2
 	url = https://github.com/ros-navigation/navigation2.git
+[submodule "workspace/src/topological_graph_node"]
+	path = workspace/src/topological_graph_node
+	url = https://github.com/FilippoGuarda/topological_graph_node.git
