@@ -10,3 +10,6 @@
 [submodule "workspace/src/graph_generator_node"]
 	path = workspace/src/graph_generator_node
 	url = https://github.com/FilippoGuarda/graph_generator_node.git
+[submodule "workspace/src/extended_spades"]
+	path = workspace/src/extended_spades
+	url = https://github.com/FilippoGuarda/extended_spades.git
