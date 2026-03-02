@@ -672,6 +672,23 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /robot6/spades_goal
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        robot_0: true
+        robot_1: true
+        robot_2: true
+        robot_3: true
+        robot_4: true
+        robot_5: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /plan_markers
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -709,7 +726,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: robot6/spades_goal
+        Value: robot1/spades_goal
   Transformation:
     Current:
       Class: rviz_default_plugins/TF
@@ -726,11 +743,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: -25.27927589416504
+      Scale: -63.17380142211914
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
-      X: -3.732604503631592
-      Y: 2.7043280601501465
+      X: 2.778596878051758
+      Y: 0.6774898767471313
     Saved: ~
 Window Geometry:
   Displays:
@@ -748,5 +765,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1732
-  X: -7
-  Y: -15
+  X: -22
+  Y: -32
