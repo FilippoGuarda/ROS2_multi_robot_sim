@@ -7,6 +7,9 @@
 [submodule "workspace/src/mppi_multi_robot_critic"]
 	path = workspace/src/mppi_multi_robot_critic
 	url = https://github.com/FilippoGuarda/mppi_multi_robot_critic.git
-[submodule "workspace/src/navigation2"]
-	path = workspace/src/navigation2
-	url = https://github.com/ros-navigation/navigation2.git
+[submodule "workspace/src/graph_generator_node"]
+	path = workspace/src/graph_generator_node
+	url = https://github.com/FilippoGuarda/graph_generator_node.git
+[submodule "workspace/src/extended_spades"]
+	path = workspace/src/extended_spades
+	url = https://github.com/FilippoGuarda/extended_spades.git
