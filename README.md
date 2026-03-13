@@ -7,7 +7,7 @@ If you want to use wsl, it takes as a given that the WSL2 environment is set up 
 The SMRTA allocation is just vestigial as in the finished project the allocation will be executes as the first step of a modified SPADES algorithm.
 
 # Warning!! (2)
-One of the submodules, the extended-SPADES repository, is currently set private as its the core of my doctoral thesis, it will be released to the public along with my thesis
+One of the submodules, the extended-SPADES repository, is currently set private as it is the core of my doctoral thesis, it will be released to the public along with my thesis
 or its relative paper
 
 ## Hardware requirements
