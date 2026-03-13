@@ -1,10 +1,14 @@
 # ROS2_multi_robot_sim
 
-# Warning!!do
-Everything here is still a big work in progress, the project originally started from a fork of Victoria Tuck's [Multi Robot Task Allocation Stack](https://github.com/victoria-tuck/multi-robot-task-allocation-stack)! made specifically for WSL2 on windows.  
+# Warning!!
+Everything here is still a big work in progress, the project originally started from a fork of Victoria Tuck's [Multi Robot Task Allocation Stack](https://github.com/victoria-tuck/multi-robot-task-allocation-stack)! made specifically for WSL2 on windows.
 But now it is being reworked from the ground up since the use case is different and not completely compatible with the original project.
-
 If you want to use wsl, it takes as a given that the WSL2 environment is set up and that `nvidia-smi` is posting on the command line.
+The SMRTA allocation is just vestigial as in the finished project the allocation will be executes as the first step of a modified SPADES algorithm.
+
+# Warning!! (2)
+One of the submodules, the extended-SPADES repository, is currently set private as its the core of my doctoral thesis, it will be released to the public along with my thesis
+or its relative paper
 
 ## Hardware requirements
 - NVIDIA discrete GPU (for gazbeo)
@@ -102,12 +106,3 @@ Example:
  ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=<input_file_path>
 ```
 
-4. Here is an example to send tasks to the allocation stack:
-
-``` bash 
-
-# Two tasks
-ros2 run smrta_wrapper task_publisher_cli 1,3,11,400000000 2,26,55,20000000
-# Four tasks
-ros2 run smrta_wrapper task_publisher_cli 2,153,178,400000000 3,47,209,20000000 4,249,17,400000000 5,223,250,20000000
-```
