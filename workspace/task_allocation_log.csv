@@ -1,0 +1,17 @@
+1050.000,task_003,robot_2,COMPLETED,43.87,stationb2->stationc3,Task executed successfully
+1186.190,task_007,robot_5,COMPLETED,151.92,stationa3->stationa2->stationb2,Task executed successfully
+1260.320,task_004,robot_2,COMPLETED,133.88,stationb1->stationc3->stationa3,Task executed successfully
+1266.130,task_006,robot_6,COMPLETED,101.84,stationc1->stationb1->stationc2,Task executed successfully
+1370.190,task_010,robot_2,COMPLETED,109.73,stationa3->stationb1->stationc3,Task executed successfully
+1378.030,task_009,robot_6,COMPLETED,7.73,stationc2->stationc3,Task executed successfully
+1646.050,task_001,robot_1,COMPLETED,5.93,stationa3->stationa4,Task executed successfully
+1678.080,task_003,robot_5,COMPLETED,38.02,stationb2->stationc3,Task executed successfully
+1698.030,task_002,robot_3,COMPLETED,57.65,stationb1->stationa1,Task executed successfully
+104.010,task_001,robot_1,COMPLETED,33.41,stationa3->stationa4,Task executed successfully
+116.060,task_003,robot_2,COMPLETED,45.87,stationb2->stationc3,Task executed successfully
+174.040,task_002,robot_3,COMPLETED,103.25,stationb1->stationa1,Task executed successfully
+374.010,task_001,robot_4,COMPLETED,33.56,stationa3->stationa4,Task executed successfully
+404.010,task_003,robot_6,COMPLETED,63.70,stationb1->stationc1,Task executed successfully
+464.090,task_007,robot_2,COMPLETED,93.83,stationa3->stationa2->stationb2,Task executed successfully
+466.010,task_004,robot_3,COMPLETED,125.81,stationb2->stationc3->stationa1,Task executed successfully
+500.020,task_006,robot_6,COMPLETED,95.90,stationc1->stationb1->stationc2,Task executed successfully
