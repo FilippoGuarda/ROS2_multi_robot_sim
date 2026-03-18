@@ -10,6 +10,7 @@ RUN apt-get install -y python3.10-dev
 
 RUN apt-get install -y ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-turtlebot3*
 RUN apt-get install -y ros-humble-nav2-simple-commander
+RUN apt-get install -y ros-humble-rmw-cyclonedds-cpp
 RUN pip3 install -U setuptools
 RUN pip3 install polytope cvxpy jax jaxlib testresources cvxpylayers gurobipy
 
@@ -18,11 +19,6 @@ RUN python3 -m pip install networkX
 RUN python3 -m pip install numpy==1.26.4 matplotlib 
 RUN python3 -m pip install matplotlib==3.7.1 pillow==9.5.0 kiwisolver==1.4.4 polytope
 RUN python3 -m pip install myst-parser sphinx sphinx-rtd-theme
-
-RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/workspace/src/multi_robot_sim/src" >> ~/.bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
-RUN echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc
 
 WORKDIR /home/
 
@@ -37,35 +33,19 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install .
 WORKDIR /home/workspace/src/multi_robot_sim/multi_robot_sim_py/multi_robot_sim_py/SMrTa/bitwuzla
 RUN pip3 install .
-RUN echo "export PYTHONPATH=\$PYTHONPATH:$(pwd)/build/src/api/python" >> ~/.bashrc
-
 WORKDIR /home/workspace
-#RUN add-apt-repository ppa:deadsnakes/ppa
-#RUN apt-get install -y python3.11
-#RUN apt-get install -y python3.11-distutils
-#RUN apt-get install -y python3.11-dev
-#RUN apt-get install -y curl
-#RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
-#RUN python3.11 -m pip install numpy matplotlib
-#RUN python3.11 -m pip install --upgrade "jax[cuda11_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html jaxlib
+RUN echo "export PYTHONPATH=\$PYTHONPATH:$(pwd)/build/src/api/python" >> ~/.bashrc
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 
+RUN echo "export PYTHONPATH=\$PYTHONPATH:/home/workspace/src/multi_robot_sim/src" >> ~/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
+RUN echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc
 
+RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py input_file:=/home/workspace/install/multi_robot_sim/share/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc && \
+    echo "alias rnav2='ros2 launch multi_robot_sim test_multi_robot_launch.py input_file:=/home/workspace/src/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc && \
+    echo "alias gcostmap='ros2 launch multi_robot_costmap_plugin multi_robot_costmap_launch.py'" >> ~/.bashrc && \
+    echo "alias rsmrta='ros2 launch multi_robot_sim smrta_multi_robot_launch.py input_file:=/home/workspace/src/multi_robot_sim/config/robot_setup_6.json'" >> ~/.bashrc 
 
-#RUN apt-get install -y ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-turtlebot3*
-#RUN apt-get install -y ros-humble-nav2-simple-commander
-#RUN pip3 install --upgrade setuptools
-#RUN pip3 install cvxpy jax jaxlib testresources cvxpylayers
-#RUN pip3 install --upgrade numpy
-#RUN pip3 install gurobipy
-#RUN python3 -m pip install jaxopt
-#RUN pip3 install -U setuptools
-#RUN pip3 install polytope
-#WORKDIR /home/
-#RUN echo "export PYTHONPATH=$PYTHONPATH:/home/workspace/src/multi_robot_sim/src" >> ~/.bashrc
-#RUN echo "source /opt/ros/galactic/setup.bash" >> ~/.bashrc
-#RUN echo "source /usr/share/gazebo/setup.sh" >> ~/.bashrc
-#RUN echo "source /home/workspace/install/local_setup.bash" >> ~/.bashrc
-
-RUN echo "alias rgazebo='ros2 launch aws_robomaker_hospital_world view_hospital.launch.py'" >> ~/.bashrc
-RUN echo "alias rnav2='ros2 launch multi_robot_sim nav2_tb3_aws_launch.py'" >> ~/.bashrc
+ENV GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH}:/home/workspace/src/aws-robomaker-hospital-world/models:/home/workspace/src/aws-robomaker-hospital-world/fuel_models"

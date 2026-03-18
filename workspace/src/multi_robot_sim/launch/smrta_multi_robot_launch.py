@@ -300,9 +300,9 @@ def generate_launch_description():
     ld.add_action(declare_use_simulator_cmd)
     ld.add_action(declare_headless_cmd)
     ld.add_action(declare_mrgc_config_file_cmd)
-    ld.add_action(declare_graph_file_cmd)
-    ld.add_action(declare_task_poses_file_cmd)
-    ld.add_action(declare_graph_nodes_file_cmd)
+    #ld.add_action(declare_graph_file_cmd)
+    #ld.add_action(declare_task_poses_file_cmd)
+    #ld.add_action(declare_graph_nodes_file_cmd)
     
     # Add environment variable
     ld.add_action(env_cmd)
@@ -315,7 +315,7 @@ def generate_launch_description():
     ld.add_action(OpaqueFunction(function=generate_robot_launches))
     
     # Add SMRTA wrapper nodes
-    ld.add_action(OpaqueFunction(function=generate_smrta_wrapper_nodes))
+    #ld.add_action(OpaqueFunction(function=generate_smrta_wrapper_nodes))
     
     # Add RViz
     ld.add_action(rviz_cmd)
