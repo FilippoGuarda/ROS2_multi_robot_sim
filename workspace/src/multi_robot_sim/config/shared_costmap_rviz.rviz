@@ -7,10 +7,8 @@ Panels:
         - /Global Options1
         - /TF1/Frames1
         - /TF1/Tree1
-        - /Map1
-        - /Map2
-        - /Path1
-        - /Path6
+        - /Path2/Status1
+        - /MarkerArray1
       Splitter Ratio: 0.4292845129966736
     Tree Height: 722
   - Class: rviz_common/Selection
@@ -510,7 +508,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot1/debug/chomp_optimized_path
+        Value: /robot1/plan
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -650,14 +648,14 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot6/debug/chomp_optimized_path
+        Value: /robot6/plan
       Value: true
     - Alpha: 1
       Axes Length: 1
       Axes Radius: 0.10000000149011612
       Class: rviz_default_plugins/Pose
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -671,17 +669,17 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /robot6/spades_goal
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        robot_0: true
         robot_1: true
         robot_2: true
         robot_3: true
         robot_4: true
         robot_5: true
+        robot_6: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -743,11 +741,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: -63.17380142211914
+      Scale: -30.69270896911621
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
-      X: 2.778596878051758
-      Y: 0.6774898767471313
+      X: 3.517606496810913
+      Y: 2.1753809452056885
     Saved: ~
 Window Geometry:
   Displays:
@@ -765,5 +763,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1732
-  X: -22
+  X: 51
   Y: -32
