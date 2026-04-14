@@ -46,7 +46,8 @@ RUN python3 -m pip install numpy
 #     pip3 install polytope numpy cvxpy jax jaxlib testresources cvxpylayers gurobipy
 
 RUN python3 -m pip install setuptools==58.2.0 && \
-    python3 -m pip install numpy==1.26.4 matplotlib
+    python3 -m pip install numpy==1.26.4 matplotlib \
+    python3 -m pip install ortools
 
 # JAX with CUDA support (ensure WSL2 CUDA drivers are installed)
 # RUN python3 -m pip install --upgrade "jax[cuda11_pip]==0.4.25" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html jaxlib==0.4.25
