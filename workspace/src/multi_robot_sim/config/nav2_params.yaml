@@ -118,7 +118,7 @@ controller_server:
       plugin: "nav2_mppi_controller::MPPIController"
       time_steps: 75
       model_dt: 0.05
-      batch_size: 1500
+      batch_size: 2000
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.4
@@ -197,7 +197,7 @@ controller_server:
         trajectory_point_step: 4
         threshold_to_consider: 0.1
         offset_from_furthest: 20
-        use_path_orientations: false
+        use_path_orientations: true
       PathFollowCritic:
         enabled: true
         cost_power: 1
