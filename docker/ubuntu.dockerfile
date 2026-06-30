@@ -6,17 +6,16 @@ RUN apt-get install -y wget build-essential libncursesw5-dev libssl-dev libsqlit
 RUN apt-get install -y software-properties-common
 RUN apt-get install -y curl
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-RUN python3 -m pip install numpy
 RUN apt-get install -y python3.10-dev
 
 RUN apt-get install -y ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-turtlebot3*
 RUN apt-get install -y ros-humble-nav2-simple-commander
 RUN pip3 install -U setuptools
-RUN pip3 install polytope numpy cvxpy jax jaxlib testresources cvxpylayers gurobipy
+RUN pip3 install polytope cvxpy jax jaxlib testresources cvxpylayers gurobipy
 
 RUN python3 -m pip install setuptools==58.2.0
-RUN python3 -m pip install numpy==1.26.4 matplotlib
-RUN python3 -m pip install --upgrade "jax[cuda11_pip]==0.4.25" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html jaxlib==0.4.25
+RUN python3 -m pip install networkX
+RUN python3 -m pip install numpy==1.26.4 matplotlib 
 RUN python3 -m pip install matplotlib==3.7.1 pillow==9.5.0 kiwisolver==1.4.4 polytope
 RUN python3 -m pip install myst-parser sphinx sphinx-rtd-theme
 
