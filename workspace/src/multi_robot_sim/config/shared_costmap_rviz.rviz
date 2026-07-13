@@ -8,8 +8,6 @@ Panels:
         - /TF1/Frames1
         - /TF1/Tree1
         - /Map1
-        - /Map2
-        - /Path1
         - /Path6
       Splitter Ratio: 0.4292845129966736
     Tree Height: 722
@@ -538,7 +536,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot2/plan
+        Value: /robot2/debug/chomp_optimized_path
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -566,7 +564,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot3/plan
+        Value: /robot3/debug/chomp_optimized_path
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -594,7 +592,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot4/plan
+        Value: /robot4/debug/chomp_optimized_path
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -622,7 +620,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot5/plan
+        Value: /robot5/debug/chomp_optimized_path
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -676,12 +674,7 @@ Visualization Manager:
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        robot_0: true
-        robot_1: true
-        robot_2: true
-        robot_3: true
-        robot_4: true
-        robot_5: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -765,5 +758,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1732
-  X: -22
+  X: 51
   Y: -32

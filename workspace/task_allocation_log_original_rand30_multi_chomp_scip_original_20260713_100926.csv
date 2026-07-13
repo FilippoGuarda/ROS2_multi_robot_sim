@@ -1,0 +1,23 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+249.000,original,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
+251.000,original,task_002,robot_6,ASSIGNED,OK,7.566,,stationc3,0,Task assigned to robot
+254.000,original,task_003,robot_5,ASSIGNED,OK,11.919,,stationc1,0,Task assigned to robot
+255.000,original,task_004,robot_2,ASSIGNED,OK,23.460,,stationa4,0,Task assigned to robot
+257.000,original,task_005,robot_3,ASSIGNED,OK,21.250,,stationc2,0,Task assigned to robot
+260.000,original,task_006,robot_4,ASSIGNED,OK,18.471,,stationb1,0,Task assigned to robot
+304.000,original,task_001,robot_1,COMPLETED,OK,13.356,55.000,stationa2,0,Task executed successfully
+304.000,original,task_008,robot_1,ASSIGNED,OK,0.481,,stationa1,0,Task assigned to robot
+305.000,original,task_002,robot_6,COMPLETED,OK,7.566,54.000,stationc3,0,Task executed successfully
+305.000,original,task_013,robot_6,ASSIGNED,OK,14.270,,stationb2,0,Task assigned to robot
+313.000,original,task_003,robot_5,COMPLETED,OK,11.919,59.000,stationc1,0,Task executed successfully
+330.000,original,task_006,robot_4,COMPLETED,OK,18.471,70.000,stationb1,1,Task executed successfully
+330.000,original,task_015,robot_4,ASSIGNED,OK,46.291,,stationa3->stationb1,0,Task assigned to robot
+337.000,original,task_008,robot_1,COMPLETED,OK,0.481,33.000,stationa1,0,Task executed successfully
+343.000,original,task_004,robot_2,COMPLETED,OK,23.460,88.000,stationa4,0,Task executed successfully
+378.000,original,task_005,robot_3,COMPLETED,OK,21.250,121.000,stationc2,1,Task executed successfully
+464.000,original,park_5,robot_5,COMPLETED,OK,0.000,151.000,stationp5,1,Task executed successfully
+479.000,original,park_3,robot_3,COMPLETED,OK,0.000,101.000,stationp3,1,Task executed successfully
+488.000,original,task_015,robot_4,COMPLETED,OK,46.291,158.000,stationa3->stationb1,0,Task executed successfully
+496.000,original,park_1,robot_1,COMPLETED,OK,0.000,159.000,stationp1,0,Task executed successfully
+519.000,original,park_2,robot_2,COMPLETED,OK,0.000,176.000,stationp2,0,Task executed successfully
+581.000,original,park_4,robot_4,COMPLETED,OK,0.000,93.000,stationp4,0,Task executed successfully
