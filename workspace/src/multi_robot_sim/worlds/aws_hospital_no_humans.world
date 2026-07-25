@@ -1525,6 +1525,6 @@
       </include>
     </model> -->
     
-  <plugin name="gazebo_ros_factory" filename="libgazebo_ros_factory.so"/>
+  <!-- <plugin name="gazebo_ros_factory" filename="libgazebo_ros_factory.so"/> -->
   </world>
 </sdf>
