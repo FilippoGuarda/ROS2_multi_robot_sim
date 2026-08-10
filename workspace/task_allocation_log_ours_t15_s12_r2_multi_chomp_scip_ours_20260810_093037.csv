@@ -1,0 +1,15 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+47.000,ours,task_001,robot_2,ASSIGNED,OK,16.575,,stationb2->stationc4,0,Task assigned to robot
+49.000,ours,task_002,robot_1,ASSIGNED,OK,32.595,,stationb1->stationc4,0,Task assigned to robot
+93.000,ours,task_001,robot_2,COMPLETED,OK,16.575,46.000,stationb2->stationc4,0,Task executed successfully
+93.000,ours,task_007,robot_2,ASSIGNED,OK,24.233,,stationa2,0,Task assigned to robot
+132.000,ours,task_002,robot_1,COMPLETED,OK,32.595,83.000,stationb1->stationc4,0,Task executed successfully
+132.000,ours,task_008,robot_1,ASSIGNED,OK,46.828,,stationa4->stationb2,0,Task assigned to robot
+150.000,ours,task_007,robot_2,COMPLETED,OK,24.233,57.000,stationa2,0,Task executed successfully
+150.000,ours,task_012,robot_2,ASSIGNED,OK,0.355,,stationa2,0,Task assigned to robot
+154.000,ours,task_012,robot_2,COMPLETED,OK,0.355,4.000,stationa2,0,Task executed successfully
+154.000,ours,task_009,robot_2,ASSIGNED,OK,23.160,,stationc4,0,Task assigned to robot
+212.000,ours,task_008,robot_1,COMPLETED,OK,46.828,80.000,stationa4->stationb2,0,Task executed successfully
+212.000,ours,task_006,robot_1,ASSIGNED,OK,47.691,,stationa2->stationc3,0,Task assigned to robot
+293.000,ours,task_006,robot_1,COMPLETED,OK,47.691,81.000,stationa2->stationc3,0,Task executed successfully
+293.000,ours,task_010,robot_1,ASSIGNED,OK,14.225,,stationb2,0,Task assigned to robot
