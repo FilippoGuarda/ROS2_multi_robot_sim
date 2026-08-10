@@ -61,7 +61,7 @@ for label in ["Original r2", "Original r4", "Original r6", "Ours r2", "Ours r4",
 
 plt.xlabel("Elapsed seconds")
 plt.ylabel("Completed tasks")
-plt.title("Completed tasks over time (t15 s12, r2/r4/r6)")
+plt.title("Completed tasks over time (t15 s12, r2/r4/r6, 300 seconds deadline)")
 plt.grid(True, alpha=0.3)
 plt.legend()
 plt.tight_layout()
