@@ -1,0 +1,22 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+50.000,original,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
+53.000,original,task_002,robot_6,ASSIGNED,OK,6.766,,stationc4,0,Task assigned to robot
+60.000,original,task_003,robot_5,ASSIGNED,OK,11.981,,stationc1,0,Task assigned to robot
+62.000,original,task_004,robot_2,ASSIGNED,OK,23.456,,stationa4,0,Task assigned to robot
+64.000,original,task_005,robot_3,ASSIGNED,OK,21.183,,stationc2,0,Task assigned to robot
+69.000,original,task_006,robot_4,ASSIGNED,OK,18.924,,stationb1,0,Task assigned to robot
+111.000,original,task_001,robot_1,COMPLETED,OK,13.356,61.000,stationa2,0,Task executed successfully
+111.000,original,task_008,robot_1,ASSIGNED,OK,0.355,,stationa2,0,Task assigned to robot
+114.000,original,task_008,robot_1,COMPLETED,OK,0.355,3.000,stationa2,0,Task executed successfully
+114.000,original,task_013,robot_1,ASSIGNED,OK,23.050,,stationb2,0,Task assigned to robot
+116.000,original,task_002,robot_6,COMPLETED,OK,6.766,63.000,stationc4,0,Task executed successfully
+130.000,original,task_003,robot_5,COMPLETED,OK,11.981,70.000,stationc1,0,Task executed successfully
+152.000,original,task_006,robot_4,COMPLETED,OK,18.924,83.000,stationb1,1,Task executed successfully
+152.000,original,task_015,robot_4,ASSIGNED,OK,46.531,,stationa3->stationb1,0,Task assigned to robot
+158.000,original,task_004,robot_2,COMPLETED,OK,23.456,96.000,stationa4,0,Task executed successfully
+186.000,original,task_005,robot_3,COMPLETED,OK,21.183,122.000,stationc2,1,Task executed successfully
+216.000,original,task_013,robot_1,COMPLETED,OK,23.050,102.000,stationb2,1,Task executed successfully
+222.000,original,park_2,robot_2,COMPLETED,OK,0.000,64.000,stationp2,1,Task executed successfully
+288.000,original,park_6,robot_6,COMPLETED,OK,0.000,172.000,stationp6,1,Task executed successfully
+292.000,original,park_3,robot_3,COMPLETED,OK,0.000,106.000,stationp3,1,Task executed successfully
+339.000,original,park_1,robot_1,COMPLETED,OK,0.000,123.000,stationp1,1,Task executed successfully

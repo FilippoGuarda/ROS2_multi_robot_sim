@@ -6,9 +6,6 @@ But now it is being reworked from the ground up since the use case is different 
 If you want to use wsl, it takes as a given that the WSL2 environment is set up and that `nvidia-smi` is posting on the command line.
 The SMRTA allocation is just vestigial as in the finished project the allocation will be executes as the first step of a modified SPADES algorithm.
 
-# Warning!! (2)
-One of the submodules, the extended-SPADES repository, is currently set private as it is the core of my doctoral thesis, it will be released to the public along with my thesis
-or its relative paper
 
 ## Hardware requirements
 - NVIDIA discrete GPU (for gazbeo)
