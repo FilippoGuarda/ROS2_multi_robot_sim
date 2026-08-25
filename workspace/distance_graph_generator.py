@@ -1,17 +1,19 @@
 from pathlib import Path
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg") 
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-ours_csv = Path("multi_chomp_metrics_ours_rand30_ours_coordinator_20260723_064814.csv").resolve()
-orig_csv = Path("multi_chomp_metrics_original_rand30_original_coordinator_20260723_070938.csv").resolve()
+ours_csv = Path("multi_chomp_metrics_ours_t15_s42_r6_ours_coordinator_20260728_121423.csv").resolve()
+orig_csv = Path("multi_chomp_metrics_original_t15_s42_r6_original_coordinator_20260727_124451.csv").resolve()
 out_dir = Path("output")
 out_dir.mkdir(exist_ok=True)
 
-chart_path = out_dir / "distance_compare.png"
-summary_path = out_dir / "distance_compare_summary.csv"
+chart_path = out_dir / "distance_compare_baseline_2.png"
+summary_path = out_dir / "distance_compare_summary_safety.csv"
+
+SAFETY_DISTANCE = 0.4
 
 
 def prepare_robot_series(csv_path, label):
@@ -46,13 +48,16 @@ summary = pd.concat([
 ], ignore_index=True)
 summary.to_csv(summary_path, index=False)
 
-ymin = min(orig_robots["allocation_cost"].min(), ours_robots["allocation_cost"].min())
-ymax = max(orig_robots["allocation_cost"].max(), ours_robots["allocation_cost"].max())
+
+ymin = min(orig_robots["allocation_cost"].min(), ours_robots["allocation_cost"].min(), SAFETY_DISTANCE)
+ymax = max(orig_robots["allocation_cost"].max(), ours_robots["allocation_cost"].max(), SAFETY_DISTANCE)
+
 
 fig, axes = plt.subplots(3, 1, figsize=(14, 12), sharex=False, constrained_layout=True)
 
 for robot_id, grp in orig_robots.groupby("robot_id"):
     axes[0].plot(grp["elapsed_sec"], grp["allocation_cost"], linewidth=1.1, label=robot_id)
+axes[0].axhline(SAFETY_DISTANCE, color="red", linestyle="--", linewidth=1.5, zorder=5)
 axes[0].set_title("Original: per-robot minimum distance")
 axes[0].set_ylabel("Min dist")
 axes[0].set_ylim(ymin, ymax)
@@ -60,6 +65,7 @@ axes[0].grid(True, alpha=0.3)
 
 for robot_id, grp in ours_robots.groupby("robot_id"):
     axes[1].plot(grp["elapsed_sec"], grp["allocation_cost"], linewidth=1.1, label=robot_id)
+axes[1].axhline(SAFETY_DISTANCE, color="red", linestyle="--", linewidth=1.5, zorder=5)
 axes[1].set_title("Ours: per-robot minimum distance")
 axes[1].set_ylabel("Min dist")
 axes[1].set_ylim(ymin, ymax)
@@ -79,6 +85,7 @@ axes[2].plot(
     linewidth=2.2,
     label="ours overall"
 )
+axes[2].axhline(SAFETY_DISTANCE, color="red", linestyle="--", linewidth=1.5, label="safety distance (= 0.4m)", zorder=5)
 axes[2].set_title("Overall minimum distance comparison")
 axes[2].set_xlabel("Elapsed sec")
 axes[2].set_ylabel("Global min")
