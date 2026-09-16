@@ -1,0 +1,22 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+37.000,ours,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
+40.000,ours,task_002,robot_2,ASSIGNED,OK,23.456,,stationa4,0,Task assigned to robot
+46.000,ours,task_003,robot_3,ASSIGNED,OK,21.164,,stationc1,0,Task assigned to robot
+50.000,ours,task_004,robot_4,ASSIGNED,OK,32.295,,stationb1->stationc4,0,Task assigned to robot
+93.000,ours,task_001,robot_1,COMPLETED,OK,13.356,56.000,stationa2,0,Task executed successfully
+93.000,ours,task_006,robot_1,ASSIGNED,OK,23.053,,stationb2,0,Task assigned to robot
+120.000,ours,task_002,robot_2,COMPLETED,OK,23.456,80.000,stationa4,0,Task executed successfully
+120.000,ours,task_003,robot_3,COMPLETED,OK,21.164,74.000,stationc1,1,Task executed successfully
+120.000,ours,task_010,robot_3,ASSIGNED,OK,13.520,,stationb1,0,Task assigned to robot
+120.000,ours,task_005,robot_2,ASSIGNED,OK,0.326,,stationa4,0,Task assigned to robot
+124.000,ours,task_005,robot_2,COMPLETED,OK,0.326,4.000,stationa4,0,Task executed successfully
+124.000,ours,task_013,robot_2,ASSIGNED,OK,0.605,,stationa4,0,Task assigned to robot
+128.000,ours,task_013,robot_2,COMPLETED,OK,0.605,4.000,stationa4,0,Task executed successfully
+128.000,ours,task_011,robot_2,ASSIGNED,OK,0.326,,stationa4,0,Task assigned to robot
+132.000,ours,task_011,robot_2,COMPLETED,OK,0.326,4.000,stationa4,0,Task executed successfully
+132.000,ours,task_007,robot_2,ASSIGNED,OK,27.049,,stationc2,0,Task assigned to robot
+144.000,ours,task_004,robot_4,COMPLETED,OK,32.295,94.000,stationb1->stationc4,1,Task executed successfully
+144.000,ours,task_015,robot_4,ASSIGNED,OK,46.076,,stationa2->stationc4,0,Task assigned to robot
+209.000,ours,task_007,robot_2,COMPLETED,OK,27.049,77.000,stationc2,1,Task executed successfully
+288.000,ours,task_015,robot_4,COMPLETED,OK,46.076,144.000,stationa2->stationc4,1,Task executed successfully
+300.000,ours,park_2,robot_2,COMPLETED,OK,0.000,91.000,stationp2,1,Task executed successfully
