@@ -26,9 +26,16 @@ include_directories(SYSTEM
   /usr/local/include #for lightsfm
 )
 # this needed to tell colcon to place launch files in the share folder
-install(DIRECTORY launch worlds config urdf
+install(DIRECTORY launch scripts worlds config urdf
   DESTINATION share/${PROJECT_NAME})
 # install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME})
+
+install(PROGRAMS
+  scripts/moving_obstacle_spawner.py
+  scripts/moving_obstacle_patrol.py
+  scripts/moving_actor_patrol.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 
 # add_executable(set_gazebo_state_node nodes/gazebo_set_state.cpp)

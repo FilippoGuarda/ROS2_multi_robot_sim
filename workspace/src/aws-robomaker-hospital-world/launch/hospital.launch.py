@@ -3,7 +3,7 @@ import sys
 import launch
 from launch.substitutions import LaunchConfiguration, Command
 from ament_index_python.packages import get_package_share_directory
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node, PushRosNamespace
 import argparse
@@ -45,6 +45,39 @@ def generate_launch_description():
     ld = launch.LaunchDescription()
     ld.add_action(declare_robot_urdf_cmd)
     ld.add_action(launch_gazebo)
+
+
+    obstacle_spawner = Node(
+        package='multi_robot_sim',
+        executable='moving_obstacle_spawner.py',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'waypoint_file': os.path.join(multi_robot_sim_dir, 'config',
+                                        'humans_waypoint_config.yaml'),
+            'linear_speed': 0.4,
+            'radius': 0.3,
+            'height': 1.0,
+        }]
+    )
+    ld.add_action(TimerAction(period=10.0, actions=[obstacle_spawner]))
+
+
+    # WARNING! OLD VERSION OF GAZEBO, SO THESE ACTORS DO NOT HAVE COLLISIONS FOR THE LIDAR DETECTION!
+
+    # actor_patrol = Node(
+    #     package='multi_robot_sim',
+    #     executable='moving_actor_patrol.py',
+    #     output='screen',
+    #     parameters=[{
+    #         'use_sim_time': True,
+    #         'waypoint_file': os.path.join(multi_robot_sim_dir, 'config',
+    #                                     'humans_waypoint_config.yaml'),
+    #         'linear_speed': 0.8,
+    #     }]
+    # )
+    # ld.add_action(TimerAction(period=5.0, actions=[actor_patrol]))
+
 
     for i, robot_name in enumerate(robot_names):
         namespace = robot_name
