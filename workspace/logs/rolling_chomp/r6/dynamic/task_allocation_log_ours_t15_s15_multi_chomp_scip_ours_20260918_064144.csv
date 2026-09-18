@@ -1,0 +1,29 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+47.000,ours,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
+49.000,ours,task_002,robot_2,ASSIGNED,OK,23.456,,stationa4,0,Task assigned to robot
+56.000,ours,task_003,robot_6,ASSIGNED,OK,6.865,,stationc4,0,Task assigned to robot
+59.000,ours,task_004,robot_3,ASSIGNED,OK,30.508,,stationb1->stationc1,0,Task assigned to robot
+62.000,ours,task_005,robot_5,ASSIGNED,OK,39.408,,stationa1,0,Task assigned to robot
+69.000,ours,task_006,robot_4,ASSIGNED,OK,20.578,,stationb2,0,Task assigned to robot
+140.000,ours,task_003,robot_6,COMPLETED,OK,6.865,84.000,stationc4,0,Task executed successfully
+140.000,ours,task_011,robot_6,ASSIGNED,OK,24.782,,stationa3,0,Task assigned to robot
+157.000,ours,task_001,robot_1,COMPLETED,OK,13.356,110.000,stationa2,0,Task executed successfully
+157.000,ours,task_007,robot_1,ASSIGNED,OK,23.216,,stationc4,0,Task assigned to robot
+171.000,ours,task_006,robot_4,COMPLETED,OK,20.578,102.000,stationb2,1,Task executed successfully
+171.000,ours,task_010,robot_4,ASSIGNED,OK,0.302,,stationb2,0,Task assigned to robot
+175.000,ours,task_010,robot_4,COMPLETED,OK,0.302,4.000,stationb2,0,Task executed successfully
+175.000,ours,task_008,robot_4,ASSIGNED,OK,0.302,,stationb2,0,Task assigned to robot
+179.000,ours,task_008,robot_4,COMPLETED,OK,0.302,4.000,stationb2,0,Task executed successfully
+179.000,ours,task_012,robot_4,ASSIGNED,OK,0.302,,stationb2,0,Task assigned to robot
+183.000,ours,task_012,robot_4,COMPLETED,OK,0.302,4.000,stationb2,0,Task executed successfully
+183.000,ours,task_013,robot_4,ASSIGNED,OK,22.746,,stationa2,0,Task assigned to robot
+191.000,ours,task_002,robot_2,COMPLETED,OK,23.456,142.000,stationa4,0,Task executed successfully
+191.000,ours,task_015,robot_2,ASSIGNED,OK,26.600,,stationa4->stationc3,0,Task assigned to robot
+209.000,ours,task_011,robot_6,COMPLETED,OK,24.782,69.000,stationa3,1,Task executed successfully
+209.000,ours,task_009,robot_6,ASSIGNED,OK,41.235,,stationc2->stationb2,0,Task assigned to robot
+229.000,ours,task_005,robot_5,COMPLETED,OK,39.408,167.000,stationa1,0,Task executed successfully
+229.000,ours,task_014,robot_5,ASSIGNED,OK,44.956,,stationb2->stationa4,0,Task assigned to robot
+231.000,ours,task_007,robot_1,COMPLETED,OK,23.216,74.000,stationc4,1,Task executed successfully
+244.000,ours,task_013,robot_4,COMPLETED,OK,22.746,61.000,stationa2,1,Task executed successfully
+271.000,ours,task_015,robot_2,COMPLETED,OK,26.600,80.000,stationa4->stationc3,1,Task executed successfully
+291.000,ours,park_4,robot_4,COMPLETED,OK,0.000,47.000,stationp4,1,Task executed successfully
