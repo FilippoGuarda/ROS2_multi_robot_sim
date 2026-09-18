@@ -1,0 +1,25 @@
+timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
+37.000,original,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
+40.000,original,task_002,robot_6,ASSIGNED,OK,6.865,,stationc4,0,Task assigned to robot
+47.000,original,task_003,robot_5,ASSIGNED,OK,11.981,,stationc1,0,Task assigned to robot
+49.000,original,task_004,robot_2,ASSIGNED,OK,25.056,,stationa4,0,Task assigned to robot
+51.000,original,task_005,robot_3,ASSIGNED,OK,21.751,,stationc2,0,Task assigned to robot
+56.000,original,task_006,robot_4,ASSIGNED,OK,18.924,,stationb1,0,Task assigned to robot
+100.000,original,task_002,robot_6,COMPLETED,OK,6.865,60.000,stationc4,0,Task executed successfully
+100.000,original,task_008,robot_6,ASSIGNED,OK,24.124,,stationa1,0,Task assigned to robot
+128.000,original,task_001,robot_1,COMPLETED,OK,13.356,91.000,stationa2,0,Task executed successfully
+128.000,original,task_013,robot_1,ASSIGNED,OK,22.692,,stationb2,0,Task assigned to robot
+136.000,original,task_006,robot_4,COMPLETED,OK,18.924,80.000,stationb1,0,Task executed successfully
+136.000,original,task_011,robot_4,ASSIGNED,OK,45.562,,stationa3->stationb1,0,Task assigned to robot
+140.000,original,task_003,robot_5,COMPLETED,OK,11.981,93.000,stationc1,0,Task executed successfully
+158.000,original,task_005,robot_3,COMPLETED,OK,21.751,107.000,stationc2,1,Task executed successfully
+162.000,original,task_012,robot_3,ASSIGNED,OK,26.660,,stationc3->stationa2,0,Task assigned to robot
+162.000,original,task_007,robot_5,ASSIGNED,OK,26.986,,stationa2,0,Task assigned to robot
+250.000,original,task_013,robot_1,COMPLETED,OK,22.692,122.000,stationb2,1,Task executed successfully
+250.000,original,task_014,robot_1,ASSIGNED,OK,0.302,,stationb2,0,Task assigned to robot
+254.000,original,task_014,robot_1,COMPLETED,OK,0.302,4.000,stationb2,0,Task executed successfully
+254.000,original,task_009,robot_1,ASSIGNED,OK,0.302,,stationb2,0,Task assigned to robot
+258.000,original,task_009,robot_1,COMPLETED,OK,0.302,4.000,stationb2,0,Task executed successfully
+277.000,original,task_004,robot_2,COMPLETED,OK,25.056,228.000,stationa4,1,Task executed successfully
+277.000,original,task_010,robot_2,ASSIGNED,OK,22.136,,stationa4->stationb1,0,Task assigned to robot
+310.000,original,task_015,robot_1,ASSIGNED,OK,41.675,,stationa4->stationb2,0,Task assigned to robot

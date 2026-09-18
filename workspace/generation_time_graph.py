@@ -3,7 +3,22 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-out_dir = Path("workspace/output")
+
+from logstats_common import (
+    ALGO_ORDER,
+    ALGO_SHORT,
+    CHOMP_TIME_EVENTS,
+    DEADLINE_SEC,
+    FLEET_COLOR,
+    FLEET_ORDER,
+    OUT_DIR,
+    SCENARIO_ORDER,
+    chomp_time_samples,
+    discover_runs,
+    metrics_runs,
+)
+
+out_dir = OUT_DIR
 out_dir.mkdir(exist_ok=True)
 
 # A star computation time approximation based on BFS paper

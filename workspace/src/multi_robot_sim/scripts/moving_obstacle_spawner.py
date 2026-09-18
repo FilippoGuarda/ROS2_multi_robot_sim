@@ -66,6 +66,7 @@ SDF_TEMPLATE = """<?xml version="1.0"?>
             </ode>
           </friction>
           <contact>
+            <collide_without_contact>true</collide_without_contact>
             <ode>
               <kp>1000000.0</kp>
               <kd>1.0</kd>
