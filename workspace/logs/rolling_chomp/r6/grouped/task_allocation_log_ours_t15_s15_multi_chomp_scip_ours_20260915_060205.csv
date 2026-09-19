@@ -1,6 +1,0 @@
-timestamp,run_id,task_id,robot_id,event,status,allocation_cost,duration,path,collision_flag,message
-159.000,ours,task_001,robot_1,ASSIGNED,OK,13.356,,stationa2,0,Task assigned to robot
-161.000,ours,task_002,robot_2,ASSIGNED,OK,23.456,,stationa4,0,Task assigned to robot
-168.000,ours,task_003,robot_6,ASSIGNED,OK,6.550,,stationc4,0,Task assigned to robot
-171.000,ours,task_004,robot_3,ASSIGNED,OK,30.508,,stationb1->stationc1,0,Task assigned to robot
-174.000,ours,task_005,robot_4,ASSIGNED,OK,41.368,,stationa3,0,Task assigned to robot
